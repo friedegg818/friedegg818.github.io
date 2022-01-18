@@ -21,9 +21,9 @@ $caption-font-family: $serif !default;
 
 /* 폰트 사이즈 */ 
 html {
-    font-size: 12px; // originally 16px
+    font-size: 14px; // originally 16px
     @include breakpoint($medium) {
-        font-size: 7px; // originally 18px
+        font-size: 14px; // originally 18px
     }
 
     @include breakpoint($large) {
