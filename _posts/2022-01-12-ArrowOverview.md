@@ -33,7 +33,7 @@ last_modified_At: 2022-01-13
 #### 특징 
 > **1. Columnar is Fast**
 
-![columnar](/assets/img/columnar.png)
+![columnar](/assets/img/columnarformat.png)
 
 - Apache Arrow format을 사용하면 연산 루틴과 실행 엔진이 커다란 데이터 chunk를 스캔, 반복할 때의 효율성을 극대화할 수 있음 
 - 특히, 연속된 Columnar layout은 최신 프로세서에 포함된 최신 SIMD 연산을 사용하여 벡터화 가능 
