@@ -33,7 +33,7 @@ last_modified_At: 2022-01-13
 #### 특징 
 > **1. Columnar is Fast**
 
-<img src="https://github.com/friedegg818/friedegg818.github.io/blob/master/_posts/img/columnarformat.png">
+![columnar](/assets/img/columnar.png)
 
 - Apache Arrow format을 사용하면 연산 루틴과 실행 엔진이 커다란 데이터 chunk를 스캔, 반복할 때의 효율성을 극대화할 수 있음 
 - 특히, 연속된 Columnar layout은 최신 프로세서에 포함된 최신 SIMD 연산을 사용하여 벡터화 가능 
@@ -42,7 +42,7 @@ last_modified_At: 2022-01-13
 
 > **2. Standardization Saves** 
 
-![standard](./img/standardization.png)
+![standard](/assets/img/standardization.png)
 
 **Problem**
 - 표준 Columnar data format이 없으면 모든 데이터베이스 및 언어는 자체 내부 data format을 구현해야 함 → 엄청난 낭비 
