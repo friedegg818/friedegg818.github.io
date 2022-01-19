@@ -1,6 +1,8 @@
 ---
 
-title: "[Apache Arrow] Overview" 
+title: "[Apache Arrow] 01.Overview" 
+
+excerpt: Apache Arrow 공식 홈페이지 개요 
 
 categories: 
     - Apache Arrow
@@ -65,3 +67,8 @@ last_modified_At: 2022-01-13
 - 이러한 공식 Library를 사용하면 Arrow columnar format 자체를 구현하지 않아도 Third-party 프로젝트에서 Arrow 데이터로 작업할 수 있음 
 -  또한 원격 Storage system에서 데이터를 in & out 하고 네트워크 인터페이스를 통해 Arrow format data를 이동하는 것과 관련된 시스템 문제를 지원하는 많은 소프트웨어 구성 요소가 포함됨 → 이러한 구성 요소 중 일부는 Columnar format이 전혀 사용되지 않는 시나리오에서도 사용할 수 있음 
 - Arrow Dataset에 대한 분석 작업 또는 쿼리를 수행하기 위한 알고리즘 라이브러리도 존재
+
+***
+
+### References
+- https://arrow.apache.org/
