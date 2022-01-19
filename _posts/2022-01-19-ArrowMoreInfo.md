@@ -1,6 +1,6 @@
 ---
 
-title: "[Apache Arrow] More Info" 
+title: "[Apache Arrow] 03.More Info" 
 
 excerpt: Overview 내용 포함하여 Search를 통해 얻은 정보 정리 
 
@@ -42,24 +42,24 @@ last_modified_At: 2022-01-19
 - 테이블 구조 데이터와 계층형 데이터 정의 
 - CPU나 GPU 등 현대적 하드웨어에서 효율적인 분석 작업 목표
 
-> **컬럼 기반 메모리 포맷** 
-> - 모든 컴퓨터 언어가 이해할 수 있는 표준 컬럼 메모리 형식 
-> - 통계적인 집계나 대용량 데이터 처리에 적합한 메모리 구조 
-> - C, C++, Java, Python 등의 대부분의 언어를 지원하여 Client SDK (Software Development Kit)를 이용해 손쉬운 개발 가능 
-> - Columnar 유관 여러 플랫폼이나 서비스에서 거의 호환됨         
->   → Arrow format만 지원하면 데이터 변환을 할 필요가 없음         
->   → 대규모 데이터 분석 작업에서는 변환 문제만 해결되어도 많은 시간 절약 가능         
->   → **데이터 분석 속도 향상**
+    > **컬럼 기반 메모리 포맷** 
+    > - 모든 컴퓨터 언어가 이해할 수 있는 표준 컬럼 메모리 형식 
+    > - 통계적인 집계나 대용량 데이터 처리에 적합한 메모리 구조 
+    > - C, C++, Java, Python 등의 대부분의 언어를 지원하여 Client SDK (Software Development Kit)를 이용해 손쉬운 개발 가능 
+    > - Columnar 유관 여러 플랫폼이나 서비스에서 거의 호환됨         
+    >   → Arrow format만 지원하면 데이터 변환을 할 필요가 없음         
+    >   → 대규모 데이터 분석 작업에서는 변환 문제만 해결되어도 많은 시간 절약 가능         
+    >   → **데이터 분석 속도 향상**
 
 
 ## 핵심 기술 
 - Arrow 자체가 실행 엔진은 아님 
 - 다음 유형의 시스템에 대한 공유 기반 역할을 하도록 설계됨 
 
-> 1) SQL excution engines (ex.Drill, Impala..)        
-> 2) Data analysis systems (ex.Pandas, Spark..)        
-> 3) Streaming and queuing systems (ex.Kafka, Storm..)        
-> 4) Storage systems (ex.Parquet, Kudu, cassandra, HBase..)        
+    > 1) SQL excution engines (ex.Drill, Impala..)        
+    > 2) Data analysis systems (ex.Pandas, Spark..)        
+    > 3) Streaming and queuing systems (ex.Kafka, Storm..)        
+    > 4) Storage systems (ex.Parquet, Kudu, cassandra, HBase..)        
 
 - 위의 시스템들과 경쟁 관계가 아니라, 각각의 시스템 내에서 작업하여 향상된 성능과 강력한 상호 운용성을 제공함 
 
@@ -68,17 +68,17 @@ last_modified_At: 2022-01-19
 
 ![architecture](/assets/img/architecture.png)
 
-- Defined Data Type Sets
+- **Defined Data Type Sets**
   > Int, Big-Int, Decimal, Varchar, Map, Struct 및 Array와 같은 SQL 및 JSON 유형 모두 포함 
-- Canonical Representations
+- **Canonical Representations**
   > 데이터 유형 위에 구축된 임의의 복잡한 레코드 구조를 지원하기 위한 표준 표현 
-- Common Data Structures
+- **Common Data Structures**
   > Pick-list, hash tables, queue를 포함한 Arrow 인식 데이터 구조 
-- Inter-Process Communication
+- **Inter-Process Communication**
   > TCP/IP 및 RDMA와 같은 공유 메모리 하에서 이루어짐 
-- Data Libraries
+- **Data Libraries**
   > Java, C++, Python, Ruby, Rust, Go, JavaScript와 같은 다양한 언어로 컬럼 데이터를 읽고 쓰는데 사용
-- Pipleline and SIMD Algorithms
+- **Pipleline and SIMD Algorithms**
   > Bitmap selection, hasing, filtering, bucketing, sorting, matching을 포함한 여러 작업에 사용
 
   ```
@@ -87,30 +87,32 @@ last_modified_At: 2022-01-19
        대용량 데이터를 빠르게 처리 
   ``` 
 
-- Columnar In-Memory Compression
+- **Columnar In-Memory Compression**
   > 메모리 효율을 높이는 기술  
-- Memory Persistence Tools
+- **Memory Persistence Tools**
   > 비휘발성 메모리, SSD 또는 HDD를 통한 지속성  
 
 
 ## 성능
 - Arrow는 다음과 같은 요소를 극대화: 10배~100배 더 빠른 실행 성능 제공 → End-user 성능 크게 향상  
 
- > - Cache locality 
- > - Pipelining
- > - SIMD Instructions 
+    > - Cache locality 
+    > - Pipelining
+    > - SIMD Instructions 
 
- ![performance](/assets/img/performance.png)
+   ![performance](/assets/img/performance.png)
 
  - Zero-copy 데이터 공유 촉진: 두 시스템 간에 데이터를 이동하는데 오버헤드가 없음 
  - 메모리 효율성
- > - 네트워크에서 데이터를 이동하는 비용을 최소화하도록 설계 
- > - 분산 수집 읽기 및 쓰기를 활용하고 직렬화/역직렬화 설계가 제로로 되어있어 노드 간 데이터 이동이 저렴 
+    > - 네트워크에서 데이터를 이동하는 비용을 최소화하도록 설계 
+    > - 분산 수집 읽기 및 쓰기를 활용하고 직렬화/역직렬화 설계가 제로로 되어있어 노드 간 데이터 이동이 저렴 
 
- - 프로그래밍 언어 지원: 
-    ``` 
-        C, C++ 
-        Java, JavaScript
-        Go, Python 
-        Rust, Ruby
-    ```
+ - 프로그래밍 언어 지원
+    > - C, C++, Java, JavaScript, Go, Python, Rust, Ruby
+
+***
+
+### References
+- https://www.dremio.com/data-lake/apache-arrow/
+- https://www.tutorialandexample.com/apache-arrow-tutorial/
+- https://blog.streamlit.io/all-in-on-apache-arrow/

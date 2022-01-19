@@ -1,6 +1,8 @@
 ---
 
-title: "[Apache Arrow] Relation to other projects" 
+title: "[Apache Arrow] 02.Relation to other projects" 
+
+excerpt: Arrow 파일 형식 및 타 라이브러리와의 관계
 
 categories: 
     - Apache Arrow
@@ -31,7 +33,7 @@ last_modified_At: 2022-01-14
 - Arrow와 Parquet은 완전히 다르고, 일반적으로 서로를 보완하며 응용 프로그램에서 함께 사용됨 
 - Parquet을 사용하여 디스크에 데이터를 저장하고, Arrow 형식으로 메모리를 읽어들이면 컴퓨팅 하드웨어를 최대한 활용할 수 있음 
 
-***
+
 # Arrow files 
 
 ### IPC Mechanism
@@ -52,7 +54,7 @@ last_modified_At: 2022-01-14
 3. Parquet 파일은 Parquet이 사용하는 columnar data **압축 전략**때문에 Arrow IPC 파일보다 **훨씬 작은 경우가 많음**         
 → 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
 
-*** 
+
 # Feather file format 
 
 ### Feather v1 format 
@@ -62,7 +64,7 @@ last_modified_At: 2022-01-14
 - 정확한 Arrow IPC file format
 - 이전 버전과의 호환성을 위해 **"Feather"** 이름과 API 유지 
 
-***
+
 
 # Arrow와 Protobuf / Flatbuffers
 
@@ -82,13 +84,20 @@ last_modified_At: 2022-01-14
  ### Flatbuffers
  - Binary data 직렬화를 위한 low-level building block 
  - 크고 구조화된 동질 데이터 표현에 적합하지 않으며, 데이터 분석 작업을 위한 올바른 추상화 계층에 있지 않음 
+
  <br>
+
  - Arrow는 데이터 분석 요구 사항을 직접적으로 겨냥한 데이터 계층 
  - 분석에 필요한 포괄적인 data type 컬렉션을 제공 
  - "null" 값에 대한 내장 지원 
  - I/O 및 컴퓨팅의 확장 toolbox를 제공 
+
 <br>
+
 - **Arrow file format**은 Arrow binary IPC protocol을 구현하는데 필요한 스키마 및 기타 메타데이터를 직렬화하기 위해 hodd에서 Flatbuffers를 사용하지만, **Arrow data format**은 최적의 액세스 및 계산을 위해 자체 표현을 사용함
 
+***
 
+### References
+- https://arrow.apache.org/
 
