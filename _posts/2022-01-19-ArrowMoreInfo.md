@@ -75,10 +75,18 @@ last_modified_At: 2022-01-19
 - Inter-Process Communication
   > TCP/IP 및 RDMA와 같은 공유 메모리 하에서 이루어짐 
 - Data Libraries
-  > Java, C++, Python, Ruby, Rust, Go, JavaScript와 같은 다양한 언어로 컬럼 데이터를 읽고 쓰는데 사용 
+  ```
+   Java, C++, Python, Ruby, Rust, Go, JavaScript와 같은 다양한 언어로 컬럼 데이터를 읽고 쓰는데 사용
+  ```
 - Pipleline and SIME Algorithms
-  > Bitmap selection, hasing, filtering, bucketing, sorting, matching을 포함한 여러 작업에 사용
+  ```
+   Bitmap selection, hasing, filtering, bucketing, sorting, matching을 포함한 여러 작업에 사용
+  ```
 - Columnar In-Memory Compression
-  > 메모리 효율을 높이는 기술 
+  ```
+   메모리 효율을 높이는 기술
+  ```  
 - Memory Persistence Tools
-  > 비휘발성 메모리, SSD 또는 HDD를 통한 지속성 
+  ```
+   비휘발성 메모리, SSD 또는 HDD를 통한 지속성 
+  ``` 
