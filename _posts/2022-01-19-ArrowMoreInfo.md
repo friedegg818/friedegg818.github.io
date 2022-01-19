@@ -78,10 +78,15 @@ last_modified_At: 2022-01-19
   ```
    Java, C++, Python, Ruby, Rust, Go, JavaScript와 같은 다양한 언어로 컬럼 데이터를 읽고 쓰는데 사용
   ```
-- Pipleline and SIME Algorithms
+- Pipleline and SIMD Algorithms
   ```
    Bitmap selection, hasing, filtering, bucketing, sorting, matching을 포함한 여러 작업에 사용
   ```
+  ```
+   * SIMD (Single Instruction Multiple Data) 
+     : 병렬 컴퓨팅의 한 종류로, 하나의 명령어로 여러 개의 값을 동시에 계산하는 방식 
+       대용량 데이터를 빠르게 처리 
+  ``` 
 - Columnar In-Memory Compression
   ```
    메모리 효율을 높이는 기술
