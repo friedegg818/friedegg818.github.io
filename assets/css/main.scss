@@ -23,7 +23,7 @@ $caption-font-family: $serif !default;
 html {
     font-size: 14px; // originally 16px
     @include breakpoint($medium) {
-        font-size: 16px; // originally 18px
+        font-size: 15px; // originally 18px
     }
 
     @include breakpoint($large) {
