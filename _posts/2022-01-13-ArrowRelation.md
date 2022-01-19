@@ -99,4 +99,4 @@ last_modified_At: 2022-01-14
 ***
 
 ### <span style="color:#00CCCC">References</span>
-- https://arrow.apache.org/
+- <https://arrow.apache.org/>
