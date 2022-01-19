@@ -74,10 +74,13 @@ last_modified_At: 2022-01-14
 - 데이터 처리에 적합하지 않음        
   → 데이터 처리를 위해 Arrow와 같은 In-memory 표현으로 역직렬화 되어야 함       
   → 이러한 역 직렬화를 수행하는 라이브러리가 있지만 공통 In-memory format을 목표로 하지는 않아서 한 언어에서 다른 언어로 데이터를 마샬링해야 함                 
-  <span style="color:gray">** *마샬링: 한 객체의 메모리에서의 표현 방식을 저장 또는 전송에 적합한 다른 데이터 형식으로 변환하는 과정*</span>
-  <br> 
+    ``` 
+     * 마샬링: 한 객체의 메모리에서의 표현 방식을 
+              저장 또는 전송에 적합한 다른 데이터 형식으로 변환하는 과정
+    ``` 
  - Arrow는 이러한 과정을 거치지 않아도 되지만, 대신 공간이 더 늘어나게 됨 
- - Protobuf는 유선상의 특정 종류의 데이터를 직렬화하는데 더 나은 선택이 될 수 있음 (ex.개별 레코드 또는 많은 선택적 필드가 있는 Spares data)
+ - Protobuf는 유선상의 특정 종류의 데이터를 직렬화하는데 더 나은 선택이 될 수 있음           
+   (ex.개별 레코드 또는 많은 선택적 필드가 있는 Spares data)
 
  **Parquet과 마찬가지로 Arrow와 Protobuf는 서로를 잘 보완하는 관계!**
 
@@ -85,14 +88,12 @@ last_modified_At: 2022-01-14
  - Binary data 직렬화를 위한 low-level building block 
  - 크고 구조화된 동질 데이터 표현에 적합하지 않으며, 데이터 분석 작업을 위한 올바른 추상화 계층에 있지 않음 
 
- <br>
 
  - Arrow는 데이터 분석 요구 사항을 직접적으로 겨냥한 데이터 계층 
  - 분석에 필요한 포괄적인 data type 컬렉션을 제공 
  - "null" 값에 대한 내장 지원 
  - I/O 및 컴퓨팅의 확장 toolbox를 제공 
 
-<br>
 
 - **Arrow file format**은 Arrow binary IPC protocol을 구현하는데 필요한 스키마 및 기타 메타데이터를 직렬화하기 위해 hodd에서 Flatbuffers를 사용하지만, **Arrow data format**은 최적의 액세스 및 계산을 위해 자체 표현을 사용함
 
