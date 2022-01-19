@@ -23,14 +23,14 @@ last_modified_At: 2022-01-13
 - Apache Arrow는 대용량 dataset을 처리하고 전달하는 고성능 application 구축을 위한 소프트웨어 개발 플랫폼
 - 분석 알고리즘의 성능 향상 및 시스템이나 프로그래밍 언어 간의 효율적인 데이터 이동을 위해 설계됨
 
-### 중요 Component : In-memory columnar format 
+## 중요 Component : In-memory columnar format 
 - 최신 하드웨어에서 처리하는데 매우 효율적
 - 광범위한 사용 사례에 적합한 범용 테이블 형식 데이터 표현
 - 표준화 되고 언어에 구애받지 않는 사양 
 - Random access와 Streaming / scan 기반 Workload 지원 
 - 분석 database system, data frame library 등의 요구사항을 지원하도록 설계된 풍부한 data type system을 보유 (중첩 및 사용자 정의 data type 포함)
 
-#### 특징 
+### 특징 
 > **1. Columnar is Fast**
 
 ![columnar](/assets/img/columnarformat.png)
