@@ -100,6 +100,8 @@ last_modified_At: 2022-01-19
  > - Pipelining
  > - SIMD Instructions 
 
+ ![performance](/assets/img/performance.png)
+
  - Zero-copy 데이터 공유 촉진: 두 시스템 간에 데이터를 이동하는데 오버헤드가 없음 
  - 메모리 효율성
  > - 네트워크에서 데이터를 이동하는 비용을 최소화하도록 설계 
