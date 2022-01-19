@@ -31,6 +31,7 @@ last_modified_At: 2022-01-19
 ![Arrow](/assets/img/basicConcept.png)
 
 - 개발 플랫폼 + 소프트웨어 라이브러리 (재사용 가능) 
+- 서로 다른 프로그래밍 언어와 시스템 간의 인터페이스 역할 
 - 파일 시스템 / 다양한 저장 형식 / 데이터베이스에 access 하기 위한 도구 → 빠른 데이터 access 및 이동 
 
 - Columnar data 구조의 이점을 in-memory computing과 결합하여 복잡한 데이터 및 동적 스키마의 유연성 제공 
@@ -45,9 +46,9 @@ last_modified_At: 2022-01-19
 > - 모든 컴퓨터 언어가 이해할 수 있는 표준 컬럼 메모리 형식 
 > - 통계적인 집계나 대용량 데이터 처리에 적합한 메모리 구조 
 > - C, C++, Java, Python 등의 대부분의 언어를 지원하여 Client SDK (Software Development Kit)를 이용해 손쉬운 개발 가능 
-> - Columnar 유관 여러 플랫폼이나 서비스에서 거의 호환됨 
->   → Arrow format만 지원하면 데이터 변환을 할 필요가 없음 
->   → 대규모 데이터 분석 작업에서는 변환 문제만 해결되어도 많은 시간 절약 가능 
+> - Columnar 유관 여러 플랫폼이나 서비스에서 거의 호환됨         
+>   → Arrow format만 지원하면 데이터 변환을 할 필요가 없음         
+>   → 대규모 데이터 분석 작업에서는 변환 문제만 해결되어도 많은 시간 절약 가능         
 >   → **데이터 분석 속도 향상**
 
 
@@ -55,12 +56,13 @@ last_modified_At: 2022-01-19
 - Arrow 자체가 실행 엔진은 아님 
 - 다음 유형의 시스템에 대한 공유 기반 역할을 하도록 설계됨 
 
-> 1) SQL excution engines (ex.Drill, Impala..)
-> 2) Data analysis systems (ex.Pandas, Spark..)
-> 3) Streaming and queuing systems (ex.Kafka, Storm..)
-> 4) Storage systems (ex.Parquet, Kudu, cassandra, HBase..)
+> 1) SQL excution engines (ex.Drill, Impala..)        
+> 2) Data analysis systems (ex.Pandas, Spark..)        
+> 3) Streaming and queuing systems (ex.Kafka, Storm..)        
+> 4) Storage systems (ex.Parquet, Kudu, cassandra, HBase..)        
 
 - 위의 시스템들과 경쟁 관계가 아니라, 각각의 시스템 내에서 작업하여 향상된 성능과 강력한 상호 운용성을 제공함 
+
 
 ## 주요 구성 요소 
 
@@ -75,23 +77,38 @@ last_modified_At: 2022-01-19
 - Inter-Process Communication
   > TCP/IP 및 RDMA와 같은 공유 메모리 하에서 이루어짐 
 - Data Libraries
-  ```
-   Java, C++, Python, Ruby, Rust, Go, JavaScript와 같은 다양한 언어로 컬럼 데이터를 읽고 쓰는데 사용
-  ```
+  > Java, C++, Python, Ruby, Rust, Go, JavaScript와 같은 다양한 언어로 컬럼 데이터를 읽고 쓰는데 사용
 - Pipleline and SIMD Algorithms
-  ```
-   Bitmap selection, hasing, filtering, bucketing, sorting, matching을 포함한 여러 작업에 사용
-  ```
+  > Bitmap selection, hasing, filtering, bucketing, sorting, matching을 포함한 여러 작업에 사용
+
   ```
    * SIMD (Single Instruction Multiple Data) 
      : 병렬 컴퓨팅의 한 종류로, 하나의 명령어로 여러 개의 값을 동시에 계산하는 방식 
        대용량 데이터를 빠르게 처리 
   ``` 
+
 - Columnar In-Memory Compression
-  ```
-   메모리 효율을 높이는 기술
-  ```  
+  > 메모리 효율을 높이는 기술  
 - Memory Persistence Tools
-  ```
-   비휘발성 메모리, SSD 또는 HDD를 통한 지속성 
-  ``` 
+  > 비휘발성 메모리, SSD 또는 HDD를 통한 지속성  
+
+
+## 성능
+- Arrow는 다음과 같은 요소를 극대화: 10배~100배 더 빠른 실행 성능 제공 → End-user 성능 크게 향상  
+
+ > - Cache locality 
+ > - Pipelining
+ > - SIMD Instructions 
+
+ - Zero-copy 데이터 공유 촉진: 두 시스템 간에 데이터를 이동하는데 오버헤드가 없음 
+ - 메모리 효율성
+ > - 네트워크에서 데이터를 이동하는 비용을 최소화하도록 설계 
+ > - 분산 수집 읽기 및 쓰기를 활용하고 직렬화/역직렬화 설계가 제로로 되어있어 노드 간 데이터 이동이 저렴 
+
+ - 프로그래밍 언어 지원: 
+    ``` 
+        C, C++ 
+        Java, JavaScript
+        Go, Python 
+        Rust, Ruby
+    ```
