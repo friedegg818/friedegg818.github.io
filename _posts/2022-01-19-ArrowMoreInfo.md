@@ -112,7 +112,7 @@ last_modified_At: 2022-01-19
 
 ***
 
-### References
+### <span style="color:#00CCCC">References</span>
 - https://www.dremio.com/data-lake/apache-arrow/
 - https://www.tutorialandexample.com/apache-arrow-tutorial/
 - https://blog.streamlit.io/all-in-on-apache-arrow/

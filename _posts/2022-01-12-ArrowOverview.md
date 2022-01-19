@@ -70,5 +70,5 @@ last_modified_At: 2022-01-13
 
 ***
 
-### References
+### <span style="color:#00CCCC">References</span>
 - https://arrow.apache.org/

@@ -17,7 +17,7 @@ last_modified_At: 2022-01-14
 
 ---
 
-# Apache Arrow vs. Apache Parquet
+## Apache Arrow vs. Apache Parquet
 
 ### Parquet 
 - Runtime in-memory format이 아님 
@@ -34,7 +34,7 @@ last_modified_At: 2022-01-14
 - Parquet을 사용하여 디스크에 데이터를 저장하고, Arrow 형식으로 메모리를 읽어들이면 컴퓨팅 하드웨어를 최대한 활용할 수 있음 
 
 
-# Arrow files 
+## Arrow files 
 
 ### IPC Mechanism
 - Inter-process communication mechanism 
@@ -55,7 +55,7 @@ last_modified_At: 2022-01-14
 → 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
 
 
-# Feather file format 
+## Feather file format 
 
 ### Feather v1 format 
 - Arrow IPC file format이 개발되기 전에 Arrow format의 하위 집합을 디스크에 쓰기 위해 단순화된 사용자 정의 컨테이너
@@ -66,7 +66,7 @@ last_modified_At: 2022-01-14
 
 
 
-# Arrow와 Protobuf / Flatbuffers
+## Arrow와 Protobuf / Flatbuffers
 
 ### Protobuf 
 - Google의 프로토콜 버퍼 라이브러리 
@@ -98,6 +98,5 @@ last_modified_At: 2022-01-14
 
 ***
 
-### References
+### <span style="color:#00CCCC">References</span>
 - https://arrow.apache.org/
-
