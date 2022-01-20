@@ -84,9 +84,10 @@ last_modified_At: 2022-01-14
  - Protobuf는 유선상의 특정 종류의 데이터를 직렬화하는데 더 나은 선택이 될 수 있음           
    (ex.개별 레코드 또는 많은 선택적 필드가 있는 Spares data)
 
- **Parquet과 마찬가지로 Arrow와 Protobuf는 서로를 잘 보완하는 관계!**
+    **Parquet과 마찬가지로 Arrow와 Protobuf는 서로를 잘 보완하는 관계!**
 
  ### Flatbuffers
+ ### Flatbuffers 
  - Binary data 직렬화를 위한 low-level building block 
  - 크고 구조화된 동질 데이터 표현에 적합하지 않으며, 데이터 분석 작업을 위한 올바른 추상화 계층에 있지 않음 
 
