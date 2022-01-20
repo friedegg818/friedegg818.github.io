@@ -42,7 +42,7 @@ last_modified_At: 2022-01-14
 
 ### Arrow IPC file format과 Parquet format 비교 시 고려 사항 
 
-|Parquet|Arrow|
+|Parquet format|Arrow IPC file format|
 |:---:|:---:|
 | 장기 저장 및 보관 목적으로 설계 | Arrow on-disk format은 안정적이며 향후 버전 라이브러리에서 읽을 수 있지만, 장기 보관 저장소의 요구 사항을 우선시하지는 않음 |
 | 파일을 읽는데 비교적 복잡한 디코딩 필요 | Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음 |
