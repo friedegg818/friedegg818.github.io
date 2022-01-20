@@ -55,7 +55,8 @@ last_modified_At: 2022-01-14
 | 장기 저장 및 보관 목적으로 설계 | Arrow on-disk format은 안정적이며 향후 버전 라이브러리에서 읽을 수 있지만, 장기 보관 저장소의 요구 사항을 우선시하지는 않음 |
 | 파일을 읽는데 비교적 복잡한 디코딩 필요 | Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음 |
 | columnar data 압축 전략을 사용하여 Arrow IPC 파일보다 훨씬 작은 경우가 많음 | - |
-→ 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
+
+   → 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
 
 
 ## Feather file format 
