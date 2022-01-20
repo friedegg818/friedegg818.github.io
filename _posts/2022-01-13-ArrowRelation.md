@@ -41,14 +41,6 @@ last_modified_At: 2022-01-14
 → Arrow IPC 파일에 대한 분석을 수행하면 memory mapping을 사용하여 역직렬화 비용과 추가 copy를 피할 수 있음 
 
 ### Arrow IPC file format과 Parquet format 비교 시 고려 사항 
-- Parquet은 **장기 저장 및 보관 목적**으로 설계             
-   Arrow on-disk format은 안정적이며 향후 버전 라이브러리에서 읽을 수 있지만, 장기 보관 저장소의 요구 사항을 우선시하지는 않음 
-
-- Parquet 파일을 읽으려면 비교적 **복잡한 디코딩**이 필요            
-   Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음 
-
-- Parquet 파일은 Parquet이 사용하는 columnar data **압축 전략**때문에 Arrow IPC 파일보다 **훨씬 작은 경우가 많음**         
-→ 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
 
 |Parquet|Arrow|
 |:---:|:---:|
@@ -56,13 +48,7 @@ last_modified_At: 2022-01-14
 | 파일을 읽는데 비교적 복잡한 디코딩 필요 | Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음 |
 | columnar data 압축 전략을 사용하여 Arrow IPC 파일보다 훨씬 작은 경우가 많음 | - |
 
-|Parquet|Arrow|
-|:---:|:---:|
-| 장기 저장 및 보관 목적 | 왜안돼 |
-| 왜 | Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음 |
-| 넌 왜 또 안되니 | - |
-
-   → 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
+ → 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
 
 
 ## Feather file format 
