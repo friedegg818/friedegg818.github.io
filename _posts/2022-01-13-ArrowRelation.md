@@ -19,16 +19,6 @@ last_modified_At: 2022-01-14
 
 ## Apache Arrow vs. Apache Parquet
 
-### Parquet 
-- Runtime in-memory format이 아님 
-- 고급 압축 및 인코딩 기술을 사용하여 공간 효율성을 극대화하도록 설계된 Storage format         
-→ Gigabyte 이상의 데이터를 저장하면서 디스크 사용량을 최소화하려는 경우에 이상적 
-- Parquet 데이터는 큰 chunk로 디코딩해야하기 때문에 메모리 읽기 비용이 상대적으로 많이 소요됨 
-
-### Arrow 
-- 연산 목적을 위해 직접적이고 효율적인 사용을 위한 In-memory format 
-- Arrow 데이터는 압축되지 않고 (혹은 사전 인코딩을 사용할 때 가볍게 압축) CPU에 대해 natural format으로 배치되어 데이터가 임의의 위치에서 전속력으로 access 될 수 있음 
-
 |Parquet|Arrow|
 |:---:|:---:|
 | Runtime in-memory format이 아님 | 직접적이고 효율적인 사용을 위한 In-memory format |
@@ -62,9 +52,9 @@ last_modified_At: 2022-01-14
 
 |Parquet|Arrow|
 |:---:|:---:|
-|장기 저장 및 보관 목적으로 설계|Arrow on-disk format은 안정적이며 향후 버전 라이브러리에서 읽을 수 있지만, 장기 보관 저장소의 요구 사항을 우선시하지는 않음 |
-|파일을 읽는데 비교적 복잡한 디코딩 필요|Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음|
-|columnar data 압축 전략을 사용하여 Arrow IPC 파일보다 훨씬 작은 경우가 많음| - |
+| 장기 저장 및 보관 목적으로 설계 | Arrow on-disk format은 안정적이며 향후 버전 라이브러리에서 읽을 수 있지만, 장기 보관 저장소의 요구 사항을 우선시하지는 않음 |
+| 파일을 읽는데 비교적 복잡한 디코딩 필요 | Arrow IPC 파일을 읽는데에는 디코딩이 필요하지 않음 |
+| columnar data 압축 전략을 사용하여 Arrow IPC 파일보다 훨씬 작은 경우가 많음 | - |
 → 디스크 Storage나 네트워크가 느린 경우, 단기 Storage나 캐싱도 Parquet이 더 나은 선택이 될 수 있음 
 
 
@@ -100,7 +90,6 @@ last_modified_At: 2022-01-14
     **Parquet과 마찬가지로 Arrow와 Protobuf는 서로를 잘 보완하는 관계!**
 
  ### Flatbuffers
- ### Flatbuffers 
  - Binary data 직렬화를 위한 low-level building block 
  - 크고 구조화된 동질 데이터 표현에 적합하지 않으며, 데이터 분석 작업을 위한 올바른 추상화 계층에 있지 않음 
 
