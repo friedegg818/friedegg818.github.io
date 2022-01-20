@@ -2,7 +2,7 @@
 
 title: "[Apache Arrow] 04.Projects Powered by Arrow" 
 
-excerpt: Apache Arrow를 사용하는 시스템 
+excerpt: Apache Arrow를 사용하는 시스템 List 
 
 categories: 
     - Apache Arrow
@@ -107,3 +107,44 @@ last_modified_At: 2022-01-20
 ## Petastorm 
 - Apache Parquet 형식의 데이터 세트에서 직접 딥 러닝 모델의 단일 머신 또는 분산 교육 및 평가를 가능하게 함 
 - Tensorflow, Pytorch 및 PySpark와 같은 주요 Python 기반 기계 학습 프레임워크를 지원 
+
+## Polars 
+- 최신 하드웨어를 효율적으로 활용하는 것을 목표로하는 고속 DataFrame 라이브러리 및 쿼리 엔진 
+- Apache Arrow를 기반으로 하며 컬럼 메모리, 컴퓨팅 커널 및 여러 IO 유틸리티를 사용함 
+- Rust로 작성되었으며 Rust 및 Python에서 사용할 수 있음 
+
+## Quilt Data 
+- 데이터를 코드만큼 쉽게 관리할 수 있도록 설계된 데이터 패키지 관리자
+- 데이터 액세스를 위해 pyarrow를 통해 Parquet 형식을 지원 
+
+## Ray 
+- 기계 학습 및 AI 애플리케이션에 중점을 둔 유연한 고성능 분산 프레임워크 
+- Arrow를 사용하여 숫자 데이터의 큰 배열을 포함하는 Python 데이터 구조를 효율적으로 저장 
+
+## Red Data Tools 
+- Ruby용 데이터 처리 도구를 제공하는 프로젝트 
+- Apache Arrow GLib 기반 Apache Arrow의 Ruby 바인딩인 Red Arrow를 제공 
+
+## SciDB 
+- 다양한 다차원 고해상도 데이터를 하나의 분석 플랫폼에서 통합하고 분석하는데 도움이 되는 확장 가능한 과학 데이터베이스 관리 시스템 
+
+## TileDB 
+- 고밀도/희소 다차원 배열 및 데이터 프레임을 저장하고 액세스하기 위한 클라우드 최적화 오픈 소스 엔진 
+- Spark 및 Dast에서 TileDB 데이터에 액세스할 때 zero-copy를 위해 Arrow 사용 
+
+## Turbodbc 
+- ODBC 인터페이를 통해 관계형 데이터베이스에 액세스하는 Python 모듈 
+
+## Vaex 
+- Python, ML용 Out-of-Core 하이브리드 Apache Arrow / NumPy DataFrame 사용 
+- 초당 10억 행의 거대한 테이블 형식 데이터를 시각화하고 탐색 
+
+## VAST 
+- 데이터 기반 보안 조사를 위한 네트워크 원격 측정 엔진 
+- Arrow 및 pyarrow를 사용하여 보안 데이터에 쉽고 효율적으로 액세스 
+
+***
+
+### <span style="color:#00CCCC">References</span>
+- <https://arrow.apache.org/>
+
