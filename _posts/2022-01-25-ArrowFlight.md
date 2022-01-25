@@ -55,3 +55,4 @@ last_modified_At: 2022-01-25
 ***
 
 ### <span style="color:#00CCCC">References</span>
+- <https://arrow.apache.org/blog/2019/10/13/introducing-arrow-flight/>
