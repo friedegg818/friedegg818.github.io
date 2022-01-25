@@ -48,6 +48,8 @@ last_modified_At: 2022-01-25
 
 > - **ListActions**: 사용 가능한 action type list 반환
 
+![Flight1](/assets/img/Flight_1.png)
+
 - gRPC의 HTTP/2 스트리밍을 기반으로 하는 gRPC의 고급 "양방향" 스트리밍 지원을 활용하여 요청이 처리되는 동안 클라이언트와 서버가 서로 데이터와 메타데이터를 동시에 전송할 수 있음 
 - 간단한 Flight 설정은 클라이언트가 연결하여 `DoGet` 요청을 하는 단일 서버로 구성될 수 있음 
 
