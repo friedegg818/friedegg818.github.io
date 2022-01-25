@@ -34,7 +34,8 @@ last_modified_At: 2022-01-25
 
 ## Apache Arrow Flight 기본 사항 
 - Arrow Flight 라이브러리는 데이터 스트림을 주고 받을 수 있는 서비스를 구현하기 위한 개발 프레임워크를 제공 
-- 지원하는 basic request 
+
+### 지원하는 basic request 
 
 > - **Handshake**: 클라이언트 인증 여부를 확인하고, 경우에 따라 향후 요청에 사용할 implementation-defined session token을 설정하기 위한 간단한 요청 
 > - **ListFlights**: 사용 가능한 데이터 스트림 목록 반환 
