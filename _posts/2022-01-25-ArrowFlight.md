@@ -59,7 +59,7 @@ last_modified_At: 2022-01-25
 - 가장 잘 지원되는 gRPC 사용 방법은 Protocol Buffers (Protobuf) `.proto` 파일에서 서비스를 정의하는  것 
 - gRPC용 Protobuf 플러그인은 애플리케이션 구현에 사용할 수 있는 gRPC service stub을 생성함 
 - RPC 명령 및 데이터 메시지는 Protobuf wire format을 사용하여 직렬화됨 
-- Apache Arrow Flight는 **"vanilla gRPC and Protocol Buffers"** 를 사용      
+- Apache Arrow Flight는 "vanilla gRPC and Protocol Buffers" 를 사용      
   → gRPC 및 Arrow를 별도로 지원할 수 있지만, Flight는 지원하지 않는 클라이언트와의 상호 운용이 가능 
 
 ### FlightData 
@@ -68,9 +68,9 @@ last_modified_At: 2022-01-25
 
 > - 중간 메모리 복사 or 직렬화 단계를 처지지 않고 전송되는 Arrow 레코드 배치를 포함하여 `FlightData` 에 대한 Protobuf wire format을 생성 
 >- 메모리 복사 or 역직렬화 없이 `FlightData`의 Protobuf 표현에서 Arrow 레코드 배치를 재구성 
-
-→ 과도한 메모리 복사를 피하기 위한 Protobuf 사용의 오버헤드 방지              
-→  이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
+> 
+> → 과도한 메모리 복사를 피하기 위한 Protobuf 사용의 오버헤드 방지              
+> →  이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
 
 
 ## Horizontal Scalability 
@@ -91,7 +91,9 @@ last_modified_At: 2022-01-25
 - `GetFlightInfo` "planning" request를 제공하는 서비스는 데이터 인접성을 활용하거나 단순히 load balancing을 돕기 위해 sibling 서비스에 작업을 위임할 수 있음 
 - 분산 클러스터의 노드마다 다른 역할을 수행할 수 있음            
   (ex.다른 노드가 데이터 스트림(`DoGet` or `DoPut`) 요청을 단독으로 수행하는 동안 노드의 하위 집합이 쿼리 계획을 담당할 수 있음)
+
 > - 서비스 역할이 분할된 Multiple-node architecture Diagram
+>
 > <p align="center"><img src="/assets/img/MultipleNodeArchitecture.png"></p>
 
 
