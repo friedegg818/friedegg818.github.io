@@ -70,7 +70,7 @@ last_modified_At: 2022-01-25
 >- 메모리 복사 or 역직렬화 없이 `FlightData`의 Protobuf 표현에서 Arrow 레코드 배치를 재구성 
 > 
 > → 과도한 메모리 복사를 피하기 위한 Protobuf 사용의 오버헤드 방지              
-> →  이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
+> → 이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
 
 
 ## Horizontal Scalability 
@@ -92,10 +92,26 @@ last_modified_At: 2022-01-25
 - 분산 클러스터의 노드마다 다른 역할을 수행할 수 있음            
   (ex.다른 노드가 데이터 스트림(`DoGet` or `DoPut`) 요청을 단독으로 수행하는 동안 노드의 하위 집합이 쿼리 계획을 담당할 수 있음)
 
-> - 서비스 역할이 분할된 Multiple-node architecture Diagram
+> **서비스 역할이 분할된 Multiple-node architecture Diagram**
 >
 > <p align="center"><img src="/assets/img/MultipleNodeArchitecture.png"></p>
 
+
+
+### Actions: 애플리케이션 비즈니스 논리로 Flight 확장 
+- `GetFlightInfo` request가 데이터 세트를 요청할 때 불투명하게 직렬화된 명령 전송을 지원하지만, 클라이언트는 서버에 다른 종류의 작업을 수행하도록 요청할 수 있음 
+- 예를 들어, 클라이언트는 다른 클라이언트의 후속 요청이 더 빨리 처리될 수 있도록 특정 데이터 집합을 메모리에 고정하도록 요청 가능 
+
+### Actions 
+- Flight 서비스는 `DoAction` RPC에 의해 수행되는 "action"을 선택적으로 정의할 수 있음 
+- Action request에는 수행 중인 작업의 이름과 추가 필요한 정보를 포함하는 선택적 직렬 데이터가 포함됨 
+- Action result는 opaque binary result의 gRPC 스트림 
+
+> **Action의 몇 가지 예제** 
+> - 기본 제공되는 `ListFlights` RPC에서 제공하는 기능을 벗어난 메타데이터 검색 
+> - 세션별 매개변수 및 세팅 설정 
+
+- 서버가 action을 구현할 필요는 없으며 action이 result를 반환할 필요는 없음 
 
 ***
 
