@@ -37,6 +37,8 @@ last_modified_At: 2022-01-27
 - Get Stream : 서버가 클라이언트에게 Stream을 보냄 
 - 모두 클라이언트에 의해 시작됨 
 
+<br>
+
 ### Stream Management
 
 <p align="left"><img src="/assets/img/Stream Management.png"></p>
@@ -53,6 +55,8 @@ last_modified_At: 2022-01-27
 #### Stream Listing 지원 
 - ListFlights (Criteria)
 - GetFlightInfo (FlightDescriptor)
+
+<br>
 
 ### Data as a Service Customization 
 - Arrow Flight는 간단한 Generic Messaging 프레임워크 지원       
