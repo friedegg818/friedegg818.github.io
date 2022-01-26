@@ -1,6 +1,6 @@
 ---
 
-title: "[Apache Arrow] 05.Apache Arrow Flight-2" 
+title: "[Apache Arrow] 06.Apache Arrow Flight-2" 
 
 excerpt: Apache Arrow Flight 관련 정보  
 
@@ -13,7 +13,7 @@ toc: true
 toc_sticky: true
 
 date: 2022-01-26
-last_modified_At: 2022-01-26
+last_modified_At: 2022-01-27
 
 ---
 
