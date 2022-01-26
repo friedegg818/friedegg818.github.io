@@ -39,7 +39,7 @@ last_modified_At: 2022-01-26
 
 ### Stream Management
 
-<p align="center"><img src="/assets/img/Stream Management.png"></p>
+<p align="left"><img src="/assets/img/Stream Management.png"></p>
 
 #### 병렬 consumption 및 locality 인식
 - Flight는 Stream으로 구성 
@@ -76,8 +76,30 @@ last_modified_At: 2022-01-26
 
 
 ## RPC Methods 
+- Flight는 
+  + 데이터 업로드/다운로드, 
+  + 데이터 스트림에 대한 메타데이터 검색, 
+  + 사용 가능한 데이터 스트림 나열 및 응용 프로그램별 RPC 메서드 구현을 위한 RPC 메서드 집합을 정의 
 
+- Flight service는 이러한 메소드 중 일부를 구현하지만, Flight Client는 어떤 메소드든 호출할 수 있음       
+  → Flight Client는 모든 Flight service에 연결하여 기본 운영 가능 
 
+- 데이터 스트림은 descriptor (path or an arbitrary binary command) 로 식별됨 
+
+### Download the data 
+
+1. 관심 있는 데이터 세트에 대한 `FlightDescriptor`을 구성하거나 얻음         
+  클라이언트는 자신이 원하는 descriptor를 이미 알고 있거나, `ListFlights`와 같은 메서드를 사용하여 해당 설명자를 검색할 수 있음 
+
+2. 데이터가 있는 위치 (ex.타 메타데이터, 스키마 및 데이터 세트 크기 추정치) 에 대한 세부 정보가 포함된 `FlightInfo` 메시지를 가져오려면 `GetFlightInfo(FlightDescriptor)`를 호출 
+
+> Flight에서는 데이터가 메타데이터와 동일한 서버에 있을 필요가 없음 
+> 이 호출은 연결할 다른 서버를 보여줄 수 있음 
+> `FlightInfo` 메시지에는 서버가 요청 중인 정확한 데이터 세트를 식별하는데 사용하는 Ticket (An opaque binary token) 이 포함됨 
+
+3. 다른 서버에 연결 (필요한 경우)
+
+4. Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
 
 ***
 
