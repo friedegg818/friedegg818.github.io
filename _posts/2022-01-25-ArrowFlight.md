@@ -1,6 +1,6 @@
 ---
 
-title: "[Apache Arrow] 05.Apache Arrow Flight" 
+title: "[Apache Arrow] 05.Apache Arrow Flight-1" 
 
 excerpt: Apache Arrow Flight 관련 정보  
 
@@ -128,7 +128,7 @@ last_modified_At: 2022-01-26
 
 ## 암호화 및 인증 
 - Flight는 TLS/OpenSSL 기능에 내장된 gRPC를 사용하여 즉시 암호화를 지원 
-- 인증을 위해 Keroberos와 같이 더 관련된 인증뿐만 아니라 간단한 인증 체계 (user/password)를 허용하는 클라이언트 및 서버에 대한 확장 가능한 인증 핸들러가 있음 
+- 인증을 위해 Keroberos와 같은 관련 인증뿐만 아니라 간단한 인증 체계 (user/password)를 허용하는 클라이언트 및 서버에 대한 확장 가능한 인증 핸들러가 있음 
 - Flight 프로토콜은 내장된 `BasicAuth`와 함께 제공되므로 user/password 인증은 커스텀 개발 없이 즉시 구현될 수 있음 
 
 
