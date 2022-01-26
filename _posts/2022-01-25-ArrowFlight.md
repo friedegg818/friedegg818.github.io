@@ -20,6 +20,16 @@ last_modified_At: 2022-01-25
 ## Apache Arrow Flight 
 - Arrow 데이터를 기반으로 하는 고성능 데이터 서비스를 위한 새로운 범용 클라이언트-서버 프레임워크 
 - gRPC 및 IPC 형식을 기반으로 구축되어 gRPC를 통한 Arrow columnar format의 최적화된 전송에 중점을 둠 (※ gRPC와의 통합에 중점을 두긴 하지만, gRPC 전용은 아님)
+
+> **gRPC as a foundation**
+> - 일반 RPC 생성 프레임워크 
+> - HTTP/2 표준에 구축됨 
+> - 다양한 Language bindings        
+>   (C++, C#, Dart, Go, Java, Android Java, >Node, Objective-C, PHP, Python, Ruby)
+> - 보안 및 압축 지원 
+> - Protobuf를 주 형식으로 사용 
+> - 주로 응용프로그램 메시징용으로 설계됨 
+
 - 다른 데이터 전송 프레임워크와의 가장 큰 차별점 → **Parallel transfer (병렬 전송)**
 
 > - 데이터를 Server cluster 로/로부터 (to/from) 동시에 스트리밍 가능      
@@ -73,6 +83,7 @@ last_modified_At: 2022-01-25
 > → 이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
 
 
+
 ## Horizontal Scalability 
 - 많은 분산형 데이터베이스 타입 시스템들은 클라이언트 요청 결과가 “coordinator” 를 통해 라우팅되고 전송되는 Architecture pattern을 사용        
   → 클라이언트로 이동하는 과정에서 데이터 세트를 여러번 전송하는 효율성 문제, 대규모 데이터 세트에 액세스할 수 있는 확장성 문제 발생         
@@ -98,7 +109,7 @@ last_modified_At: 2022-01-25
 
 
 
-### Actions: 애플리케이션 비즈니스 논리로 Flight 확장 
+## Actions: 애플리케이션 비즈니스 논리로 Flight 확장 
 - `GetFlightInfo` request가 데이터 세트를 요청할 때 불투명하게 직렬화된 명령 전송을 지원하지만, 클라이언트는 서버에 다른 종류의 작업을 수행하도록 요청할 수 있음 
 - 예를 들어, 클라이언트는 다른 클라이언트의 후속 요청이 더 빨리 처리될 수 있도록 특정 데이터 집합을 메모리에 고정하도록 요청 가능 
 
@@ -112,6 +123,14 @@ last_modified_At: 2022-01-25
 > - 세션별 매개변수 및 세팅 설정 
 
 - 서버가 action을 구현할 필요는 없으며 action이 result를 반환할 필요는 없음 
+
+
+
+### 암호화 및 인증 
+- Flight는 TLS/OpenSSL 기능에 내장된 gRPC를 사용하여 즉시 암호화를 지원 
+- 인증을 위해 Keroberos와 같이 더 관련된 인증뿐만 아니라 간단한 인증 체계 (user/password)를 허용하는 클라이언트 및 서버에 대한 확장 가능한 인증 핸들러가 있음 
+- Flight 프로토콜은 내장된 `BasicAuth`와 함께 제공되므로 user/password 인증은 커스텀 개발 없이 즉시 구현될 수 있음 
+
 
 ***
 
