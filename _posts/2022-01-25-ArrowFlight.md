@@ -79,8 +79,8 @@ last_modified_At: 2022-01-25
 > - 중간 메모리 복사 or 직렬화 단계를 처지지 않고 전송되는 Arrow 레코드 배치를 포함하여 `FlightData` 에 대한 Protobuf wire format을 생성 
 >- 메모리 복사 or 역직렬화 없이 `FlightData`의 Protobuf 표현에서 Arrow 레코드 배치를 재구성 
 > 
-> → 과도한 메모리 복사를 피하기 위한 Protobuf 사용의 오버헤드 방지              
-> → 이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
+- 과도한 메모리 복사를 피하기 위한 Protobuf 사용의 오버헤드 방지              
+- 이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
 
 
 
@@ -105,7 +105,7 @@ last_modified_At: 2022-01-25
 
 > **서비스 역할이 분할된 Multiple-node architecture Diagram**
 >
-> <p align="center"><img src="/assets/img/MultipleNodeArchitecture.png"></p>
+> <p align="left"><img src="/assets/img/MultipleNodeArchitecture.png"></p>
 
 
 
@@ -122,7 +122,7 @@ last_modified_At: 2022-01-25
 > - 기본 제공되는 `ListFlights` RPC에서 제공하는 기능을 벗어난 메타데이터 검색 
 > - 세션별 매개변수 및 세팅 설정 
 
-- 서버가 action을 구현할 필요는 없으며 action이 result를 반환할 필요는 없음 
+- 서버가 action을 구현할 필요는 없으며, action이 result를 반환할 필요는 없음 
 
 
 
@@ -136,3 +136,5 @@ last_modified_At: 2022-01-25
 
 ### <span style="color:#00CCCC">References</span>
 - <https://arrow.apache.org/blog/2019/10/13/introducing-arrow-flight/>
+- <https://arrow.apache.org/docs/format/Flight.html>
+- <https://www.slideshare.net/JacquesNadeau5/apache-arrow-flight-overview>
