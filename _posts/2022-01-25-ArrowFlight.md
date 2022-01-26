@@ -18,16 +18,12 @@ last_modified_At: 2022-01-25
 ---
 
 ## Apache Arrow Flight 
-- 빠른 데이터 전송을 위한 새로운 범용 클라이언트-서버 프레임워크 
-- gRPC를 통한 Arrow columnar format의 최적화된 전송에 중점을 둠        
-  (gRPC와의 통합에 중점을 두긴 하지만, gRPC 전용은 아님)
+- Arrow 데이터를 기반으로 하는 고성능 데이터 서비스를 위한 새로운 범용 클라이언트-서버 프레임워크 
+- gRPC 및 IPC 형식을 기반으로 구축되어 gRPC를 통한 Arrow columnar format의 최적화된 전송에 중점을 둠 (※ gRPC와의 통합에 중점을 두긴 하지만, gRPC 전용은 아님)
 - 다른 데이터 전송 프레임워크와의 가장 큰 차별점 → **Parallel transfer (병렬 전송)**
 
 > - 데이터를 Server cluster 로/로부터 (to/from) 동시에 스트리밍 가능      
 >    → 증가하고 있는 클라이언트 기반 서비스를 제공할 수 있는 확장 가능한 데이터 서비스를 보다 쉽게 만들 수 있음 
-
-- 0.15.0 Apache Arrow Release 부터 사용 가능 
-
 
 
 ## 설계 목표 
@@ -63,8 +59,8 @@ last_modified_At: 2022-01-25
 - 가장 잘 지원되는 gRPC 사용 방법은 Protocol Buffers (Protobuf) `.proto` 파일에서 서비스를 정의하는  것 
 - gRPC용 Protobuf 플러그인은 애플리케이션 구현에 사용할 수 있는 gRPC service stub을 생성함 
 - RPC 명령 및 데이터 메시지는 Protobuf wire format을 사용하여 직렬화됨 
-- Apache Arrow Flight는 **"vanilla gRPC and Protocol Buffers"** 를 사용       
-  → Arrow columnar 형식을 모르는 gRPC 클라이언트도 Flight 서비스와 상호 작용하고 Arrow 데이터를 opaquely 하게 처리할 수 있음 
+- Apache Arrow Flight는 **"vanilla gRPC and Protocol Buffers"** 를 사용      
+  → gRPC 및 Arrow를 별도로 지원할 수 있지만, Flight는 지원하지 않는 클라이언트와의 상호 운용이 가능 
 
 ### FlightData 
 - Flight의 주요 데이터 관련 Protobuf 유형 
@@ -73,9 +69,30 @@ last_modified_At: 2022-01-25
 > - 중간 메모리 복사 or 직렬화 단계를 처지지 않고 전송되는 Arrow 레코드 배치를 포함하여 `FlightData` 에 대한 Protobuf wire format을 생성 
 >- 메모리 복사 or 역직렬화 없이 `FlightData`의 Protobuf 표현에서 Arrow 레코드 배치를 재구성 
 
-- 이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
+→ 과도한 메모리 복사를 피하기 위한 Protobuf 사용의 오버헤드 방지              
+→  이렇게 최적화된 Flight 구현은 더 나은 성능을 발휘할 수 있음 
 
 
+## Horizontal Scalability 
+- 많은 분산형 데이터베이스 타입 시스템들은 클라이언트 요청 결과가 “coordinator” 를 통해 라우팅되고 전송되는 Architecture pattern을 사용        
+  → 클라이언트로 이동하는 과정에서 데이터 세트를 여러번 전송하는 효율성 문제, 대규모 데이터 세트에 액세스할 수 있는 확장성 문제 발생         
+  → Flight는 이러한 병목 현상을 처리하지 않고도 수평적으로 확장 가능한 데이터 서비스를 만들기를 원함 
+
+### GetFlightInfo RPC 
+- `GetFlightInfo` RPC를 사용하는 데이터 세트에 대한 클라이언트 request는 
+
+> - Endpoint 목록을 반환
+> - 각 endpoint에는 서버 위치와 `DoGet` request로 서버를 보내 전체 데이터 세트의 일부를 가져올 Ticket이 포함됨 
+> - 전체 데이터 세트에 access 하기 위해서는 모든 endpoint를 사용해야 함 
+> - Flight stream이 반드시 정렬되지는 않지만, ordering information을 직렬화하는데 사용할 수 있는 애플리케이션 정의 메타데이터를 제공함 
+
+### Benefits of Multiple-endpoint pattern 
+- 클라이언트는 endpoint를 병렬로 읽을 수 있음 
+- `GetFlightInfo` "planning" request를 제공하는 서비스는 데이터 인접성을 활용하거나 단순히 load balancing을 돕기 위해 sibling 서비스에 작업을 위임할 수 있음 
+- 분산 클러스터의 노드마다 다른 역할을 수행할 수 있음            
+  (ex.다른 노드가 데이터 스트림(`DoGet` or `DoPut`) 요청을 단독으로 수행하는 동안 노드의 하위 집합이 쿼리 계획을 담당할 수 있음)
+> - 서비스 역할이 분할된 Multiple-node architecture Diagram
+> <p align="center"><img src="/assets/img/MultipleNodeArchitecture.png"></p>
 
 
 ***
