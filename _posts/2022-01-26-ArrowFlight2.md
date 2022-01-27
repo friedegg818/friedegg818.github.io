@@ -312,6 +312,79 @@ message FlightDescriptor {
 }
 ```
 
+```java
+message FlightInfo {
+
+  // Schema.fbs::Schema에서 설명된대로, 데이터 세트의 스키마 
+  bytes schema = 1; 
+
+  // 이 정보와 관련된 descriptor
+  FlightDescriptor flight_descriptor = 2; 
+
+  // Flight와 관련된 endpoint list. flight를 완전히 사용하기 위해서는 모든 endpoint를 사용해야 함 
+  repeated FlightEndpoint endpoint = 3;
+
+  // 알 수 없는 경우에는 -1로 설정 
+  int64 total_records = 4; 
+  int64 total_bytes = 5
+}
+```
+- 데이터 세트를 검색하기 위한 access 좌표 
+- `FlightInfo`를 통해 사용자가 데이터 세트를 검색하는 방법을 결정할 수 있음 
+
+```java
+message FlightEndpoint {
+
+  // 이 스트림을 찾기 위해 사용되는 token 
+  Ticket ticket = 1; 
+
+  // 이 Ticket을 사용할 수 있는 URI list
+  // 리스트가 비어있는 경우 ticket이 생성된 현재 서비스에서만 ticket을 교환할 수 있음
+  repeated location location = 2;
+}
+```
+- Flight와 관련된 특정 스트림 or 분할(split)
+
+```java
+message Location {
+  string uri = 1;
+}
+```
+- Flight service가 ticekt이 주어진 특정 스트림의 검색을 허용하는 위치 
+
+```java
+message Ticket {
+  bytes ticket = 1; 
+}
+```
+- 서비스에서 스트림의 특정 부분을 검색하는데 사용할 수 있는 opaque identifier
+
+```java
+message FlightData {
+
+  // descriptor of data. 클라이언트가 새 DoPut 스트림을 시작할때만 관련 
+  FlightDescriptor flight_descriptor = 1;
+
+  // Message.fbs::Message에서 설명한대로 message 데이터의 header
+  bytes data_header = 2;
+
+  // 애플리케이션 정의 메타데이터 
+  bytes app_metadata = 3; 
+
+  // Arrow 데이터의 실제 batch 
+  // Sidecar patter를 돕기 위해 정의에서 마지막에 나오는 최소 복사본으로 처리하는 것이 좋음 
+  // (일부 구현은 추가 메모리 복사본을 피가히 위해 특수화된 코드로 이 필드를 wire에서 가져올 것으로 예상됨)
+  bytes data_body = 1000;
+}
+```
+- batch 스트림의 부분으로써의 Arrow batch
+
+```java
+message PutResult { 
+  bytes app_metadata = 1;
+}
+```
+- `DoPut` 제출과 관련된 response message 
 
 ***
 
