@@ -136,14 +136,17 @@ last_modified_At: 2022-01-27
 |UNAVAILABLE|서버 사용 불가. 연결상의 이유로 클라이언트가 내보낼 수 있음|
 
 
-### Protocol Buffer Definitions
+## Protocol Buffer Definitions
 
+### Service
 ```java
 service  FlightService 
 ```
 - Arrow 데이터를 검색하거나 저장하기 위한 endpoint 
 - Arrow Flight Protocol을 사용하여 액세스할 수 있는 미리 정의된 endpoint를 하나 이상, 이용 가능한 일련의 actions를 노출시킬 수 있음 
 
+
+### RPC
 ```java
 rpc Handshake(stream HandshakeRequest) returns (stream HandshakeReponse) {}
 ```
@@ -158,6 +161,42 @@ rpc ListFlights(Criteria) returns (stream FlightInfo) {}
 - 대부분의 Flight service는 쉽게 검색할 수 있는 하나 이상의 스트림을 노출함 
 - 사용자가 Criteria를 제공할 수도 있음 → 이 기준은 이 인터페이스를 통해 나열될 수 있는 스트림의 하위 집합을 제한할 수 있음 
 - 각 Flight service는 how to consume criteria에 대한 자체 정의를 허용 
+
+```java
+rpc GetFlightInfo(FlightDescriptor) returns (FlightInfo) {}
+```
+- 주어진 FlightDescriptor의 경우 flight 사용 방법에 대한 정보를 얻음 
+- 이는 인터페이스 소비자가 이미 사용할 특정 flight를 식별할 수 있는 경우, 유용
+- 이 인터페이스는 또한 소비자가 지정된 descriptor를 통해 flight 스트림을 생성할 수 있게 함 
+
+```java
+rpc GetSchema(Flight Descriptor) returns (SchemaResult) {} 
+```
+- 지정된 FlightDescriptor의 경우, Schema.fbs::Schema에 설명된대로 스키마를 가져옴 
+- 이것은 사용자가 Flight 스트림의 스키마가 필요할 때 사용됨 
+- `GetFlightInfo`와 마찬가지로 이 인터페이스는 `ListFlight`에서 이전에 사용할 수 없었던 new flight를 생성할 수 있음 
+
+```java
+rpc DoGet(Ticket) returns (stream FlightData) {}
+```
+- 참조된 ticket과 연관된 특정 descriptor와 연결된 단일 스트림을 검색 
+- Flight는 flight service가 스트림 모음을 관리하기 위한 별도의 opaque ticket을 사용하여 각각의 스트림을 검색하는 하나 이상의 스트림으로 구성될 수 있음
+
+```java
+rpc DoPut(stream FlightData) returns (stream PutResult) {}
+```
+- 특정 flight 스트림과 관련된 flight service에 스트림을 push 
+- 이를 통해 flight service의 클라이언트는 데이터 스트림을 업로드할 수 있음 
+- 특정 flight service에 따라, 클라이언트 사용자는 descriptor 또는 unlimited number만큼 단일 스트림을 업로드할 수 있음 
+- 후자의 경우, 서비스는 모든 스트림이 업로드 되면 descriptor에 적용할 수 있는 'seal' action을 구현할 수 있음
+
+```java
+rpc DoExchange(stream FlightData) returns (streamFlightData) {}
+```
+- 지정된 descriptor에 대한 양방향 데이터 채널 open 
+- 이를 통해 클라이언트는 단일 논리 스트림에서 임의의 Arrow 데이터와 애플리케이션별 메타데이터를 주고 받을 수 있음 
+- `DoGet`/`DoPut`과 달리, 이 기능은 연산을 flight 서비스로 (storage가 아니라) offload하는 클라이언트에게 더 적합 
+
 
 
 ***
