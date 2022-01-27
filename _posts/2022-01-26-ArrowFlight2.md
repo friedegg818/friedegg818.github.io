@@ -92,18 +92,18 @@ last_modified_At: 2022-01-27
 
 ### Download the data 
 
-1) 관심 있는 데이터 세트에 대한 `FlightDescriptor`을 구성하거나 얻음         
+1. 관심 있는 데이터 세트에 대한 `FlightDescriptor`을 구성하거나 얻음         
   클라이언트는 자신이 원하는 descriptor를 이미 알고 있거나, `ListFlights`와 같은 메서드를 사용하여 해당 설명자를 검색할 수 있음 
 
-2) 데이터가 있는 위치 (ex.타 메타데이터, 스키마 및 데이터 세트 크기 추정치) 에 대한 세부 정보가 포함된 `FlightInfo` 메시지를 가져오려면 `GetFlightInfo(FlightDescriptor)`를 호출 
+2. 데이터가 있는 위치 (ex.타 메타데이터, 스키마 및 데이터 세트 크기 추정치) 에 대한 세부 정보가 포함된 `FlightInfo` 메시지를 가져오려면 `GetFlightInfo(FlightDescriptor)`를 호출 
 
 > Flight에서는 데이터가 메타데이터와 동일한 서버에 있을 필요가 없음           
 > 이 호출은 연결할 다른 서버를 보여줄 수 있음            
 > `FlightInfo` 메시지에는 서버가 요청 중인 정확한 데이터 세트를 식별하는데 사용하는 Ticket (An opaque binary token) 이 포함됨 
 
-3) 다른 서버에 연결 (필요한 경우)
+3. 다른 서버에 연결 (필요한 경우)
 
-4) Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
+4. Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
 
 ### Upload the data
 
@@ -134,6 +134,30 @@ last_modified_At: 2022-01-27
 |UNAUTHORIZED|클라이언트가 인증되었지만 요청한 작업에 대한 사용 권한이 없음|
 |UNIMPLEMENTED|RPC가 구현되지 않음| 
 |UNAVAILABLE|서버 사용 불가. 연결상의 이유로 클라이언트가 내보낼 수 있음|
+
+
+### Protocol Buffer Definitions
+
+```java
+service  FlightService 
+```
+- Arrow 데이터를 검색하거나 저장하기 위한 endpoint 
+- Arrow Flight Protocol을 사용하여 액세스할 수 있는 미리 정의된 endpoint를 하나 이상, 이용 가능한 일련의 actions를 노출시킬 수 있음 
+
+```java
+rpc Handshake(stream HandshakeRequest) returns (stream HandshakeReponse) {}
+```
+- 클라이언트 - 서버 간의 Handshake
+- 서버에서는 향후 작업에 사용할 토큰을 결정하기 위해 handshake가 필요할 수 있음 
+- request / response는 모두 인증 메커니즘에 따라 여러 round-trips를 허용하는 스트림 
+
+```java
+rpc ListFlights(Criteria) returns (stream FlightInfo) {}
+```
+- 특정 조건이 지정된 사용 가능한 스트림 목록을 가져옴 
+- 대부분의 Flight service는 쉽게 검색할 수 있는 하나 이상의 스트림을 노출함 
+- 사용자가 Criteria를 제공할 수도 있음 → 이 기준은 이 인터페이스를 통해 나열될 수 있는 스트림의 하위 집합을 제한할 수 있음 
+- 각 Flight service는 how to consume criteria에 대한 자체 정의를 허용 
 
 
 ***
