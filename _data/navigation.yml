@@ -15,4 +15,7 @@ docs:
     url: apachecalcite/
   - title: "cuDF"
     url: cuDF
+
+Sidebar:
+  nav: "docs"
     

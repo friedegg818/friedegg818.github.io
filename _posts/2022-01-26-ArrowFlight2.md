@@ -23,7 +23,7 @@ last_modified_At: 2022-01-27
 
 ## Arrow Messaging Paradigm 
 
-### 1.Batch Streams 
+### 1. Batch Streams 
 
 <p align="center"><img src="/assets/img/BatchStreams.png"></p>
 
@@ -39,7 +39,7 @@ last_modified_At: 2022-01-27
 
 <br>
 
-### 2.Stream Management
+### 2. Stream Management
 
 <p align="left"><img src="/assets/img/Stream Management.png"></p>
 
@@ -58,7 +58,7 @@ last_modified_At: 2022-01-27
 
 <br>
 
-### 3.Data as a Service Customization 
+### 3. Data as a Service Customization 
 - Arrow Flight는 간단한 Generic Messaging 프레임워크 지원       
   → Arrow Flight context 내에서 사용자 정의 및 확장성 지원 
 
@@ -92,18 +92,18 @@ last_modified_At: 2022-01-27
 
 ### Download the data 
 
-1. 관심 있는 데이터 세트에 대한 `FlightDescriptor`을 구성하거나 얻음         
+1) 관심 있는 데이터 세트에 대한 `FlightDescriptor`을 구성하거나 얻음         
   클라이언트는 자신이 원하는 descriptor를 이미 알고 있거나, `ListFlights`와 같은 메서드를 사용하여 해당 설명자를 검색할 수 있음 
 
-2. 데이터가 있는 위치 (ex.타 메타데이터, 스키마 및 데이터 세트 크기 추정치) 에 대한 세부 정보가 포함된 `FlightInfo` 메시지를 가져오려면 `GetFlightInfo(FlightDescriptor)`를 호출 
+2) 데이터가 있는 위치 (ex.타 메타데이터, 스키마 및 데이터 세트 크기 추정치) 에 대한 세부 정보가 포함된 `FlightInfo` 메시지를 가져오려면 `GetFlightInfo(FlightDescriptor)`를 호출 
 
 > Flight에서는 데이터가 메타데이터와 동일한 서버에 있을 필요가 없음           
 > 이 호출은 연결할 다른 서버를 보여줄 수 있음            
 > `FlightInfo` 메시지에는 서버가 요청 중인 정확한 데이터 세트를 식별하는데 사용하는 Ticket (An opaque binary token) 이 포함됨 
 
- 3. 다른 서버에 연결 (필요한 경우)
+3) 다른 서버에 연결 (필요한 경우)
 
- 4. Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
+4) Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
 
 ### Upload the data
 
