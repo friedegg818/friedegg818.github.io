@@ -114,7 +114,27 @@ last_modified_At: 2022-01-27
 
 
 
-## Error  Handling 
+## Error Handling 
+- Arrow Flight는 자체 오류 코드 집합을 정의 
+- 구현은 언어마다 다름         
+  (ex.C++에서 구현되지 않는 것은 일반적인 Arrow 오류 상태지만, Java에서는 Flight-specific exception)
+
+### Error code 
+
+|Error Code|Description|
+|:---:|:---:|
+|UNKNOWN|알 수 없는 오류. 다른 오류가 적용되지 않는 경우의 기본값|
+|INTERNAL|서비스 구현 내부에 오류 발생|
+|INVALID_ARGUMENT|클라이언트가 잘못된 인수를 RPC에 전달|
+|TIMED_OUT|작업 시간 or 마감 시간 초과
+|NOT_FOUND|요청한 리소스(action,data stream)를 찾을 수 없음|
+|ALREADY_EXISTS|리소스가 이미 존재|
+|CANCELLED|클라이언트 or 서버에 의해 작업 취소|
+|UNAUTHENTICATED|클라이언트가 인증되지 않음|
+|UNAUTHORIZED|클라이언트가 인증되었지만 요청한 작업에 대한 사용 권한이 없음|
+|UNIMPLEMENTED|RPC가 구현되지 않음| 
+|UNAVAILABLE|서버 사용 불가. 연결상의 이유로 클라이언트가 내보낼 수 있음|
+
 
 ***
 
