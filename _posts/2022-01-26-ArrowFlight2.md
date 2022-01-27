@@ -197,6 +197,120 @@ rpc DoExchange(stream FlightData) returns (streamFlightData) {}
 - 이를 통해 클라이언트는 단일 논리 스트림에서 임의의 Arrow 데이터와 애플리케이션별 메타데이터를 주고 받을 수 있음 
 - `DoGet`/`DoPut`과 달리, 이 기능은 연산을 flight 서비스로 (storage가 아니라) offload하는 클라이언트에게 더 적합 
 
+```java
+rpc DoAction(Action) returns (stream Result) {}
+```
+- Flight 서비스는 잠재적인 `listFlights`, `GetFlightInfo`, `DoGet`, `DoPut` 연산 외에도 임의의 수의 간단한 작업을 지원할 수 있음 
+- `DoAction`은 flight 클라이언트가 flight 서비스에 대해 특정 action을 수행할 수 있도록 함 
+- Action에는 수행 중인 유형의 작업과 관련된 opaque request/response object가 포함됨
+
+```java
+rpc ListActions(Empty) returns (stream ActionType) {}
+```
+- Flight 서비스는 사용할 수 있는 모든 action 유형을 description과 함께 보여줌 
+- 이를 통해 다양한 flight 사용자들은 flight 서비스의 기능을 이해할 수 있음 
+
+### Message
+
+```java
+message HandshakeRequest { 
+
+    // 정의된 프로토콜 버전 
+    unit protocol_version = 1; 
+
+    // 임의 인증/handshake 정보
+    bytes payload = 2;
+}
+```
+- 클라이언트가 handshake 시 서버에 제공하는 request
+
+```java
+message HandshakeResponse { 
+  unit protocol_version = 1;
+  bytes payload = 2;
+}
+```
+
+```java
+message BasidAuth {
+  string username = 2;
+  string password = 3;
+}
+```
+- 간단한 인증을 위한 message 
+
+```java
+messageEmpty{}
+```
+
+```java
+messageActionType {
+  string type = 1; 
+  string description = 2; 
+}
+```
+- 실행에 사용되는 이름과 action의 목적에 대한 shot description을 포함하여 사용할 수 있는 action에 대해 설명 
+
+```java
+message Criteria {
+    bytes expression = 1;
+}
+```
+- 사용 가능한 Arrow Flight 스트림의 제한된 집합을 반환하는데 사용할 수 있는 서비스별 표현식 
+
+```java 
+message Action {
+  string type = 1;
+  bytes body = 2;
+}
+```
+- 서비스에 대한 opaque action 
+
+```java
+message Result {
+    bytes body = 1;
+}
+```
+- action 실행 후 받는 opaque result 
+
+```java
+message SchemaResult {
+
+  // Schema.fbs::Schema에서 설명된대로, 데이터 세트의 스키마
+  bytes schema = 1; 
+}
+```
+- getSchema call의 결과 
+
+```java
+message FlightDescriptor {
+
+    // 정의된 descriptor 유형 
+    enum DescriptorType {
+
+        // 사용되지 않은 Protobuf 패턴 
+        UNKNOWN = 0; 
+
+        // 데이터 집합을 식별하는 named path.
+        // path는 데이터 세트를 설명하는 문자열 or 문자열 목록으로 구성됨 
+        // 개념적으로 파일 시스템 내부의 경로와 유사 
+        PATH = 1;
+
+        // 데이터 세트를 생성하기 위한 opaque command 
+        CMD = 2; 
+    }
+
+    DescriptorType type = 1; 
+
+    // 명령을 표현하는데 사용되는 opaque value 
+    // type = CMD인 경우에만 정의해야 함 
+    bytes cmd = 2; 
+
+    // 특정 데이터 집합을 식별하는 문자열 목록 
+    // type = PATH인 경우에만 정의해야 함 
+    repeated string path = 3;
+}
+```
 
 
 ***
