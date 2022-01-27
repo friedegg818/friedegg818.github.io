@@ -23,7 +23,7 @@ last_modified_At: 2022-01-27
 
 ## Arrow Messaging Paradigm 
 
-### Batch Streams 
+### 1.Batch Streams 
 
 <p align="center"><img src="/assets/img/BatchStreams.png"></p>
 
@@ -39,7 +39,7 @@ last_modified_At: 2022-01-27
 
 <br>
 
-### Stream Management
+### 2.Stream Management
 
 <p align="left"><img src="/assets/img/Stream Management.png"></p>
 
@@ -58,7 +58,7 @@ last_modified_At: 2022-01-27
 
 <br>
 
-### Data as a Service Customization 
+### 3.Data as a Service Customization 
 - Arrow Flight는 간단한 Generic Messaging 프레임워크 지원       
   → Arrow Flight context 내에서 사용자 정의 및 확장성 지원 
 
@@ -101,9 +101,20 @@ last_modified_At: 2022-01-27
 > 이 호출은 연결할 다른 서버를 보여줄 수 있음            
 > `FlightInfo` 메시지에는 서버가 요청 중인 정확한 데이터 세트를 식별하는데 사용하는 Ticket (An opaque binary token) 이 포함됨 
 
-3. 다른 서버에 연결 (필요한 경우)
+ 3. 다른 서버에 연결 (필요한 경우)
 
-4. Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
+ 4. Arrow record batches 스트림을 가져오려면 `DoGet(Ticket)` 호출 
+
+### Upload the data
+
+1. 이전과 같이 `FlightDescriptor`를 구성하거나 얻음 
+
+2. `DoPut(FlightData)`을 호출하고 Arrow 레코드 배치 스트림을 업로드      
+    첫 번째 메시지와 함께 `FlightDescriptor`도 포함됨 
+
+
+
+## Error  Handling 
 
 ***
 
