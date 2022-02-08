@@ -156,8 +156,78 @@ last_modified_At: 2022-02-08
 
 ```java
    !! 보통 Arrow 공유 라이브러리르 사용하는 것이 좋음 
-   !! CMake는 대소문자를 구분하므로 위에 나열된 이름과 변수의 철자는 정확히 동잃야 함 
+   !! CMake는 대소문자를 구분하므로 위에 나열된 이름과 변수의 철자는 정확히 동일해야 함
 ```
+
+## pkg-config 
+
+### 기본 사용법 
+
+```java
+   pkg-config --cflgas --libarrow
+```
+- 위의 command line에서 적절한 빌드 flag를 얻을 수 있음 
+
+```java
+   pkg-config --cflags --libs --static arrow 
+```
+- Arrow C++ 정적 라이브러리를 연결하려면, <span style="color:orange">--static</span> 옵션 추가 
+
+```java
+   my_example: my_example:cc 
+     $(CXX) -o $@ $(CXXFLAGS) $< $$(pkg-config --cflags --libs arrow)
+```
+- Minimal Makefile은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
+
+> 다양한 빌드 시스템이 pkg-config를 지원 
+> - GNU Autotools 
+> - CMake (<span style="color:orange">find_package(Arrow)</span>를 대신 사용해야 함)
+> - Meson 등 
+
+### 사용 가능한 패키지 
+- Arrow C++는 각 모듈에 대해 pkg-config 패키지를 제공 
+
+> **패키지 종류** 
+> - arrow-csv
+> - arrow-cuda
+> - arrow-dataset
+> - arrow-filesystem
+> - arrow-flight-testing
+> - arrow-flight
+> - arrow-json
+> - arrow-orc
+> - arrow-python-flight
+> - arrow-python
+> - arrow-tensorflow
+> - arrow-testing
+> - arrow
+> - gandiva
+> - parquet
+> - plasma
+
+
+## Linking 참고 사항 
+- 일부 Arrow 구성 요소에는 프로젝트에서 사용할 수 있는 dependencies(종속성)가 존재 
+- 프로젝트가 Arrow와 동일한 방식으로 (정적 or 동적) 이러한 dependencies의 동일한 버전을 연결하도록 주의해야 함 
+- 그렇지 않으면 ODR 위반이 발생하고, 프로그램이 충돌하거나 데이터가 자동으로 손상될 수 있음 
+
+```
+  ** ODR (One Definition Rule) 
+    : C++ 프로그래밍 언어 의 중요한 규칙
+      객체 및 비 인라인 함수, 템플릿 및 유형은 둘 이상의 정의를 가질 수 없음
+```
+
+- 특히 Arrow Flight 및 그의 dependencies Protocol Buffers (Protobuf)와 gRPC가 문제를 일으킬 가능성이 높음 
+
+> 따라서 Arrow Flight를 사용할 떄에는 다음 사항을 참고
+ - Arrow Flihgt가 정적 연결일 경우, Protobuf와 gRPC도 반드시 정적으로 연결되어야 하며 동적일 경우도 마찬가지 
+ - 일부 플랫폼은 Arrow Flight에게 최신이 아닌 Protobuf나 gRPC 버전을 제공할 수 있음 
+ - Arrow Flight는 이러한 dependencies를 번들 제공하므로 두 가지 버전의 Protobuf와 gRPC가 연결될 수 있음 → 혼용되지 않도록 주의해야 함 
+
+> 권장 방법
+- 각 dependency의 소스 및 정적/동적 연결 여부를 제어할 수 있는 소스에서 작성된 Arrow 버전에 의존하는 것이 가장 쉽고, 
+- 또는 일관된 버전의 Arrow 및 dependencies를 관리할 Conda나 vcpkg같은 패키지 매니저의 Arrow를 사용하는 것이 좋음 
+
 
 ***
 
