@@ -17,8 +17,6 @@ last_modified_At: 2022-02-08
 
 ---
 
-# Arrow C++ Library 
-
 ## 구성 및 목적 
 
 ### Physical layer
@@ -54,6 +52,75 @@ last_modified_At: 2022-02-08
 
 ### Filesystem layer 
 - Filesystem abstraction을 사용하여 로컬 파일 시스템이나 S3 버킷과 같은 다양한 storage backend에서 데이터를 읽고 쓸 수 있음 
+
+
+
+## 규칙 
+- Arrow C++ API는 몇 가지 간단한 지침을 따름 
+- 많은 규칙 및 예외가 존재 
+
+### Language version 
+- C++ 11과 호환됨 
+- 몇 가지 backports는 <span style="color:orange">std::string_view</span> class와 같은 새로운 기능에 사용됨 
+
+### Namespacing 
+- 매크로를 제외한 모든 Arrow API는 arrow 네임스페이스 내부에 네임스페이스가 배치 및 중첩됨 
+
+### Safe pointers 
+- Arrow 객체는 safe pointer를 사용하여 전달 및 저장됨 
+- 대부분은 <span style="color:orange">std::shared_ptr</span>, 때때로 <span style="color:orange">std::unique_ptr</span>
+
+### 불변성 (Immutability)
+- 많은 Arrow 객체는 변경할 수 없어서 일단 생성되면 논리적 속성을 더 이상 변경 불가 
+- 번거롭고 오류가 발생하기 쉬운 동기화 없이, 멀티스레드 시나리오에서 활용할 수 있음 
+- 물론 이에 대한 명백한 예외도 존재 (ex.IO 개체 or 변경 가능한 데이터 버퍼)
+
+### Error reporting 
+- 대부분의 API는 <span style="color:orange">arrow::Status</span> 인스턴스를 반환하여 성공,실패한 결과를 나타냄 
+- Arrow는 자체 예외를 발생시키진 않지만 Third-party 예외, 특히 <span style="color:orange">std::bad_allow</span>를 통해 전파될 수 있음 
+
+- API가 오류 코드나 성공적인 값을 반환할 수 있는 경우, 보통 템플릿 클래스 <span style="color:orange">arrow::Result</span>를 반환 
+- 그러나 일부 API는 (더 이상 사용되지 않기는 함) <span style="color:orange">arrow::Status</span>를 반환하고 결과 값을 out-pointer 매개변수로 전달 
+
+<br>
+
+**작업 결과 확인 예시** 
+
+ ```C++
+    const int64_t buffer_size = 4096;
+    
+    auto maybe_buffer = 
+    arrow::AllocateBufer(buffer_size, &buffer);
+    if (!maybe_buffer.ok()) {
+         // ...handle error
+    } else { 
+       std::shared_ptr<arrow::Buffer> buffer = 
+       *maybe_buffer;
+       // ... use allocated buffer
+   }
+  ```     
+  - The caller function 자체가 <span style="color:orange">arrow::Result</span> 또는 <span style="color:orange">arrow::Status</span>를 반환하고 실패한 결과를 전달하는 경우 사용할 수 있는 매크로 
+  
+  > 1. ARROW_RETURN_NOT_OK: <span style="color:orange">arrow::Status</span> 매개변수를 사용하고 성공하지 못하면 반환 
+  > 2. ARROW_ASSIGN_OR_RAISE: <span style="color:orange">arrow::Result</span> 매개변수를 사용하고 성공하면 `lvalue`에 결과를 할당. 오류가 발생하면 해당하는 <span style="color:orange">arrow::Status</span>를 반환 
+  
+  <br>
+
+  **예시** 
+
+```C++
+   arrow::Status DoSomething() {
+     const int64_t buffer_size = 4096;
+     std::shared_ptr<arrow::Buffer> buffer;
+     ARROW_ASSIGN_OR_RAISE(buffer, arrow:: AllocateBuffer(buffer_size));
+     // ... allocation successful, do something with buffer below
+
+     // success 반환  
+     return Status::OK();
+   }
+```
+
+
 
 ***
 
