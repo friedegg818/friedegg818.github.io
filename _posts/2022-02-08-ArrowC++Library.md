@@ -53,7 +53,7 @@ last_modified_At: 2022-02-08
 ### Filesystem layer 
 - Filesystem abstraction을 사용하여 로컬 파일 시스템이나 S3 버킷과 같은 다양한 storage backend에서 데이터를 읽고 쓸 수 있음 
 
-
+<hr>
 
 ## 규칙 
 - Arrow C++ API는 몇 가지 간단한 지침을 따름 
@@ -123,6 +123,7 @@ last_modified_At: 2022-02-08
    }
 ```
 
+<hr>
 
 ## 프로젝트에서 Arrow C++ 사용하기 
 - 시스템에 Arrow C++ 라이브러리가 이미 있다고 가정했을 경우 
@@ -130,6 +131,8 @@ last_modified_At: 2022-02-08
 ### CMake 
 
 #### 기본 사용법 
+
+- Minimal <span style="color:orange">CMakeLists.txt</span> 파일은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
 
 ```java
    project (MyExample)
@@ -139,20 +142,21 @@ last_modified_At: 2022-02-08
    add_executable(my_example my example.cc)
    target_link_libraries(my_example PRIVATE arrow_shared)
 ```
-- Minimal <span style="color:orange">CMakeLists.txt</span> 파일은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
+
 
 #### 사용 가능한 변수 및 대상 
 - <span style="color:orange">find_package(Arrow REQUIRED)</span> 지시문은 CMake가 시스템에서 설치된 Arrow C++를 찾도록 요청함 
-- 요청이 반환될 때, 몇 가지 CMake 변수가 설정됨 
 
-> - <span style="color:orange">${Arrow_FOUND}</span> : Arrow C++ 라이브러리르 찾은 경우 true 반환 
-> - <span style="color:orange">${ARROW_VERSION}</span> : Arrow 버전 문자열 
-> - <span style="color:orange">${ARROW_FULL_SO_VERSION}</span> : Arrow DLL 버전 문자열 
+> 요청이 반환될 때, 몇 가지 CMake 변수가 설정됨 
 
-- 그 외에 연결할 수 있는 some target (변수 X, 일반 문자열)
+ - <span style="color:orange">${Arrow_FOUND}</span> : Arrow C++ 라이브러리르 찾은 경우 true 반환 
+ - <span style="color:orange">${ARROW_VERSION}</span> : Arrow 버전 문자열 
+ - <span style="color:orange">${ARROW_FULL_SO_VERSION}</span> : Arrow DLL 버전 문자열 
 
-> - <span style="color:orange">arrow_shared</span> : Arrow 공유 라이브러리에 대한 링크 
-> - <span style="color:orange">arrow_static</span> : Arrow 정적 라이브러리에 대한 링크 
+> 그 외에 연결할 수 있는 some target (변수 X, 일반 문자열)
+
+ - <span style="color:orange">arrow_shared</span> : Arrow 공유 라이브러리에 대한 링크 
+ - <span style="color:orange">arrow_static</span> : Arrow 정적 라이브러리에 대한 링크 
 
 ```java
    !! 보통 Arrow 공유 라이브러리르 사용하는 것이 좋음 
@@ -163,21 +167,24 @@ last_modified_At: 2022-02-08
 
 #### 기본 사용법 
 
+- 다음 command line에서 적절한 빌드 flag를 얻을 수 있음
+
 ```java
    pkg-config --cflgas --libarrow
 ```
-- 위의 command line에서 적절한 빌드 flag를 얻을 수 있음 
+
+- Arrow C++ 정적 라이브러리를 연결하려면, <span style="color:orange">--static</span> 옵션 추가 
 
 ```java
    pkg-config --cflags --libs --static arrow 
 ```
-- Arrow C++ 정적 라이브러리를 연결하려면, <span style="color:orange">--static</span> 옵션 추가 
+
+- Minimal Makefile은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
 
 ```java
    my_example: my_example:cc 
      $(CXX) -o $@ $(CXXFLAGS) $< $$(pkg-config --cflags --libs arrow)
 ```
-- Minimal Makefile은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
 
 > 다양한 빌드 시스템이 pkg-config를 지원 
 > - GNU Autotools 
@@ -220,11 +227,13 @@ last_modified_At: 2022-02-08
 - 특히 Arrow Flight 및 그의 dependencies Protocol Buffers (Protobuf)와 gRPC가 문제를 일으킬 가능성이 높음 
 
 > 따라서 Arrow Flight를 사용할 떄에는 다음 사항을 참고
- - Arrow Flihgt가 정적 연결일 경우, Protobuf와 gRPC도 반드시 정적으로 연결되어야 하며 동적일 경우도 마찬가지 
- - 일부 플랫폼은 Arrow Flight에게 최신이 아닌 Protobuf나 gRPC 버전을 제공할 수 있음 
- - Arrow Flight는 이러한 dependencies를 번들 제공하므로 두 가지 버전의 Protobuf와 gRPC가 연결될 수 있음 → 혼용되지 않도록 주의해야 함 
+
+- Arrow Flihgt가 정적 연결일 경우, Protobuf와 gRPC도 반드시 정적으로 연결되어야 하며 동적일 경우도 마찬가지 
+- 일부 플랫폼은 Arrow Flight에게 최신이 아닌 Protobuf나 gRPC 버전을 제공할 수 있음 
+- Arrow Flight는 이러한 dependencies를 번들 제공하므로 두 가지 버전의 Protobuf와 gRPC가 연결될 수 있음 → 혼용되지 않도록 주의해야 함 
 
 > 권장 방법
+
 - 각 dependency의 소스 및 정적/동적 연결 여부를 제어할 수 있는 소스에서 작성된 Arrow 버전에 의존하는 것이 가장 쉽고, 
 - 또는 일관된 버전의 Arrow 및 dependencies를 관리할 Conda나 vcpkg같은 패키지 매니저의 Arrow를 사용하는 것이 좋음 
 
