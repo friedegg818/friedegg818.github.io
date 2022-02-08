@@ -17,7 +17,7 @@ last_modified_At: 2022-02-08
 
 ---
 
-# 구성 및 목적 
+## 구성 및 목적 
 
 ### Physical layer
 - **Memory management abstraction**: heap 할당, 파일의 메모리 매핑 또는 정적 메모리 영역과 같은 다양한 수단을 통해 할당될 수 있는 메모리에 대한 균일한 API 제공 
@@ -55,7 +55,7 @@ last_modified_At: 2022-02-08
 
 
 
-# 규칙 
+## 규칙 
 - Arrow C++ API는 몇 가지 간단한 지침을 따름 
 - 많은 규칙 및 예외가 존재 
 
@@ -124,12 +124,12 @@ last_modified_At: 2022-02-08
 ```
 
 
-# 프로젝트에서 Arrow C++ 사용하기 
+## 프로젝트에서 Arrow C++ 사용하기 
 - 시스템에 Arrow C++ 라이브러리가 이미 있다고 가정했을 경우 
 
-## CMake 
+### CMake 
 
-### 기본 사용법 
+#### 기본 사용법 
 
 ```java
    project (MyExample)
@@ -141,7 +141,7 @@ last_modified_At: 2022-02-08
 ```
 - Minimal <span style="color:orange">CMakeLists.txt</span> 파일은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
 
-### 사용 가능한 변수 및 대상 
+#### 사용 가능한 변수 및 대상 
 - <span style="color:orange">find_package(Arrow REQUIRED)</span> 지시문은 CMake가 시스템에서 설치된 Arrow C++를 찾도록 요청함 
 - 요청이 반환될 때, 몇 가지 CMake 변수가 설정됨 
 
@@ -159,9 +159,9 @@ last_modified_At: 2022-02-08
    !! CMake는 대소문자를 구분하므로 위에 나열된 이름과 변수의 철자는 정확히 동일해야 함
 ```
 
-## pkg-config 
+### pkg-config 
 
-### 기본 사용법 
+#### 기본 사용법 
 
 ```java
    pkg-config --cflgas --libarrow
@@ -184,7 +184,7 @@ last_modified_At: 2022-02-08
 > - CMake (<span style="color:orange">find_package(Arrow)</span>를 대신 사용해야 함)
 > - Meson 등 
 
-### 사용 가능한 패키지 
+#### 사용 가능한 패키지 
 - Arrow C++는 각 모듈에 대해 pkg-config 패키지를 제공 
 
 > **패키지 종류** 
@@ -206,7 +206,7 @@ last_modified_At: 2022-02-08
 > - plasma
 
 
-## Linking 참고 사항 
+### Linking 참고 사항 
 - 일부 Arrow 구성 요소에는 프로젝트에서 사용할 수 있는 dependencies(종속성)가 존재 
 - 프로젝트가 Arrow와 동일한 방식으로 (정적 or 동적) 이러한 dependencies의 동일한 버전을 연결하도록 주의해야 함 
 - 그렇지 않으면 ODR 위반이 발생하고, 프로그램이 충돌하거나 데이터가 자동으로 손상될 수 있음 
