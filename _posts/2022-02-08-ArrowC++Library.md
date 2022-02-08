@@ -84,21 +84,27 @@ last_modified_At: 2022-02-08
 
 <br>
 
-**작업 결과 확인 예시** 
+> **작업 결과 확인 예시** 
 
- ```C++
-    const int64_t buffer_size = 4096;
+```C++
+  const int64_t buffer_size = 4096;
     
-    auto maybe_buffer = 
-    arrow::AllocateBufer(buffer_size, &buffer);
-    if (!maybe_buffer.ok()) {
-         // ...handle error
-    } else { 
-       std::shared_ptr<arrow::Buffer> buffer = 
-       *maybe_buffer;
-       // ... use allocated buffer
-   }
-  ```     
+  auto maybe_buffer = 
+  arrow::AllocateBufer(buffer_size, &buffer);
+  if (!maybe_buffer.ok()) {
+       // ...handle error
+  } else { 
+      std::shared_ptr<arrow::Buffer> buffer = 
+      *maybe_buffer;
+      // ... use allocated buffer
+  }
+```     
+```java
+  int purple = 64;
+```
+
+<br>
+
   - The caller function 자체가 <span style="color:orange">arrow::Result</span> 또는 <span style="color:orange">arrow::Status</span>를 반환하고 실패한 결과를 전달하는 경우 사용할 수 있는 매크로 
   
   > 1. ARROW_RETURN_NOT_OK: <span style="color:orange">arrow::Status</span> 매개변수를 사용하고 성공하지 못하면 반환 
@@ -106,7 +112,7 @@ last_modified_At: 2022-02-08
   
   <br>
 
-  **예시** 
+> **예시** 
 
 ```C++
    arrow::Status DoSomething() {
