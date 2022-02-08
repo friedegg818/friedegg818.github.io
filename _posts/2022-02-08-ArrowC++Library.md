@@ -187,9 +187,9 @@ last_modified_At: 2022-02-08
 ```
 
 > 다양한 빌드 시스템이 pkg-config를 지원 
-> - GNU Autotools 
-> - CMake (<span style="color:orange">find_package(Arrow)</span>를 대신 사용해야 함)
-> - Meson 등 
+- GNU Autotools 
+- CMake (<span style="color:orange">find_package(Arrow)</span>를 대신 사용해야 함)
+- Meson 등 
 
 #### 사용 가능한 패키지 
 - Arrow C++는 각 모듈에 대해 pkg-config 패키지를 제공 
