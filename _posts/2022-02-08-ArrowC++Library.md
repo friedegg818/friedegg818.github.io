@@ -82,7 +82,7 @@ last_modified_At: 2022-02-08
 - API가 오류 코드나 성공적인 값을 반환할 수 있는 경우, 보통 템플릿 클래스 <span style="color:orange">arrow::Result</span>를 반환 
 - 그러나 일부 API는 (더 이상 사용되지 않기는 함) <span style="color:orange">arrow::Status</span>를 반환하고 결과 값을 out-pointer 매개변수로 전달 
 
-<br>
+
 
 > **작업 결과 확인 예시** 
 
@@ -100,14 +100,14 @@ last_modified_At: 2022-02-08
   }
 ```     
 
-<br>
+
 
   > **The caller function 자체가 <span style="color:orange">arrow::Result</span> 또는 <span style="color:orange">arrow::Status</span>를 반환하고 실패한 결과를 전달하는 경우 사용할 수 있는 매크로** 
   
   1. ARROW_RETURN_NOT_OK: <span style="color:orange">arrow::Status</span> 매개변수를 사용하고 성공하지 못하면 반환 
   2. ARROW_ASSIGN_OR_RAISE: <span style="color:orange">arrow::Result</span> 매개변수를 사용하고 성공하면 `lvalue`에 결과를 할당. 오류가 발생하면 해당하는 <span style="color:orange">arrow::Status</span>를 반환 
   
-  <br>
+
 
 > **예시** 
 
