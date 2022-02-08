@@ -17,7 +17,7 @@ last_modified_At: 2022-02-08
 
 ---
 
-## 구성 및 목적 
+# 구성 및 목적 
 
 ### Physical layer
 - **Memory management abstraction**: heap 할당, 파일의 메모리 매핑 또는 정적 메모리 영역과 같은 다양한 수단을 통해 할당될 수 있는 메모리에 대한 균일한 API 제공 
@@ -55,7 +55,7 @@ last_modified_At: 2022-02-08
 
 
 
-## 규칙 
+# 규칙 
 - Arrow C++ API는 몇 가지 간단한 지침을 따름 
 - 많은 규칙 및 예외가 존재 
 
@@ -111,7 +111,7 @@ last_modified_At: 2022-02-08
 
 > **예시** 
 
-```python
+```java
    arrow::Status DoSomething() {
      const int64_t buffer_size = 4096;
      std::shared_ptr<arrow::Buffer> buffer;
@@ -124,6 +124,40 @@ last_modified_At: 2022-02-08
 ```
 
 
+# 프로젝트에서 Arrow C++ 사용하기 
+- 시스템에 Arrow C++ 라이브러리가 이미 있다고 가정했을 경우 
+
+## CMake 
+
+### 기본 사용법 
+
+```java
+   project (MyExample)
+
+   find_package(Arrow REQUIRED)
+
+   add_executable(my_example my example.cc)
+   target_link_libraries(my_example PRIVATE arrow_shared)
+```
+- Minimal <span style="color:orange">CMakeLists.txt</span> 파일은 <span style="color:orange">my_example.cc</span> source 파일을 Arrow C++ 공유 라이브러리와 연결된 실행 파일로 컴파일 
+
+### 사용 가능한 변수 및 대상 
+- <span style="color:orange">find_package(Arrow REQUIRED)</span> 지시문은 CMake가 시스템에서 설치된 Arrow C++를 찾도록 요청함 
+- 요청이 반환될 때, 몇 가지 CMake 변수가 설정됨 
+
+> - <span style="color:orange">${Arrow_FOUND}</span> : Arrow C++ 라이브러리르 찾은 경우 true 반환 
+> - <span style="color:orange">${ARROW_VERSION}</span> : Arrow 버전 문자열 
+> - <span style="color:orange">${ARROW_FULL_SO_VERSION}</span> : Arrow DLL 버전 문자열 
+
+- 그 외에 연결할 수 있는 some target (변수 X, 일반 문자열)
+
+> - <span style="color:orange">arrow_shared</span> : Arrow 공유 라이브러리에 대한 링크 
+> - <span style="color:orange">arrow_static</span> : Arrow 정적 라이브러리에 대한 링크 
+
+```java
+   !! 보통 Arrow 공유 라이브러리르 사용하는 것이 좋음 
+   !! CMake는 대소문자를 구분하므로 위에 나열된 이름과 변수의 철자는 정확히 동잃야 함 
+```
 
 ***
 
