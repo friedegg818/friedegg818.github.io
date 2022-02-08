@@ -1,6 +1,6 @@
 ---
 
-title: "[Apache Arrow] 07. Arrow C++ Library" 
+title: "[Apache Arrow] 07.Arrow C++ Library" 
 
 excerpt: C++ Library 관련 사항 
 
