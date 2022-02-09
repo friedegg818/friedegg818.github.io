@@ -13,7 +13,7 @@ toc: true
 toc_sticky: true
 
 date: 2022-02-08
-last_modified_At: 2022-02-08
+last_modified_At: 2022-02-09
 
 ---
 
@@ -125,7 +125,7 @@ last_modified_At: 2022-02-08
 
 <hr>
 
-## 프로젝트에서 Arrow C++ 사용하기 
+## Build System
 - 시스템에 Arrow C++ 라이브러리가 이미 있다고 가정했을 경우 
 
 ### CMake 
@@ -149,7 +149,7 @@ last_modified_At: 2022-02-08
 
 > 요청이 반환될 때, 몇 가지 CMake 변수가 설정됨 
 
- - <span style="color:orange">${Arrow_FOUND}</span> : Arrow C++ 라이브러리르 찾은 경우 true 반환 
+ - <span style="color:orange">${Arrow_FOUND}</span> : Arrow C++ 라이브러리를 찾은 경우 true 반환 
  - <span style="color:orange">${ARROW_VERSION}</span> : Arrow 버전 문자열 
  - <span style="color:orange">${ARROW_FULL_SO_VERSION}</span> : Arrow DLL 버전 문자열 
 
@@ -242,3 +242,5 @@ last_modified_At: 2022-02-08
 
 ### <span style="color:#00CCCC">References</span>
 - <https://arrow.apache.org/docs/cpp/overview.html>
+- <https://arrow.apache.org/docs/cpp/conventions.html>
+- <https://arrow.apache.org/docs/cpp/build_system.html>
