@@ -38,7 +38,7 @@ last_modified_At: 2022-02-10
 
 ### 관련 API 
 
-#### <span style="color:#FF1493">class arrow::Buffer</span>
+#### <span style="color:#FF8C00">class arrow::Buffer</span>
 - 특정 크기의 연속적인 메모리에 대한 pointer를 포함하는 개체 
 - size / capacity 라는 두가지 관련 개념 
 > - size: 유효한 데이터를 가질 수 있는 바이트 수 
@@ -121,6 +121,14 @@ last_modified_At: 2022-02-10
 - 버퍼는 CPU 버퍼여야 함 <span style="color:#00FFFF">(is cpu()가 true)</span>
 - 그렇지 않으면 assertion이 발생하거나 null pointer가 반환될 수 있음 
 - 장치에 관계없이 버퍼의 데이터 주소를 얻으려면 <span style="color:#00FFFF">address()</span>호출 
+
+```java
+    inline uint8_t *mutable_data()
+```
+- 버퍼의 데이터에 대한 writable pointer를 반환 
+- 버퍼는 변경 가능한 CPU 버퍼여야 함 <span style="color:#00FFFF">(is cpu() / is mutable()이 true)</span>
+- 그렇지 않으면 assertion이 발생하거나 null pointer가 반환될 수 있음 
+- 장치에 관계없이 버퍼의 변경 가능한 데이터 주소를 얻으려면 <span style="color:#00FFFF">mutable_address()</span>호출 
 
 ***
 
