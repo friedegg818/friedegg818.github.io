@@ -1,8 +1,8 @@
 ---
 
-title: "[Apache Arrow] 07.Arrow C++ Library" 
+title: "[Apache Arrow] 07.Arrow C++ Library-1" 
 
-excerpt: C++ Library 관련 사항 
+excerpt: 구성 및 목적 / 규칙 / 기본 사용법
 
 categories: 
     - Apache Arrow
