@@ -63,6 +63,65 @@ last_modified_At: 2022-02-10
 - 매개변수 
   + data - [in] string_view 객체
 
+```java
+    inline Buffer(const std::shared_ptr<Buffer> &parent, const int64_t offset, const int64_t size)
+```
+- 다른 버퍼가 소유한 데이터의 offset이지만, parent buffer에 대한 다른 shared_ptr이 파괴된 이후에도 유효한 pointer를 유지하기를 원함 
+- 이 방법은 버퍼의 정렬이나 패딩에 대한 assertion을 만들지 않지만 일반적으로 버퍼가 64바이트로 정렬되고 채워질 것으로 예상함 
+- 앞으로 버퍼가 이 규칙을 충족하는지 확인하는데 도움이 되는 유틸리티 메서드를 추가할 수 있음 
+
+```java
+    std::string ToHexString() 
+```
+- 버퍼의 16진수 표현으로 새로운 std::string을 구성 
+- Returns > std::string 
+
+```java
+    bool Equals(const Buffer &other, int64_t nbytes) const
+```
+- 두 버퍼가 동일한 크기이고, 비교된 바이트 수까지 동일한 바이트를 포함하는 경우 true를 반환 
+
+```java
+    bool Equals(const Buffer &other) const
+```
+- 두 버퍼가 같은 크기이고 동일한 바이트를 포함하는 경우 true 반환 
+
+```java
+    Result<std::shared_ptr<Buffer>> CopySlice(const int64_t start, const int64_t nbytes, MemoryPool *pool = default_memory_pool()) const
+```
+- 버퍼의 section을 새 버퍼에 복사 
+
+```java
+    inline void ZeroPadding() 
+```
+- Zero bytes in padding, 즉 size_와 capacity_ 사이의 바이트 
+
+```java
+    std::string ToString() const 
+```
+- 버퍼 내용을 새로운 std::string에 복사 
+- Returs > std::string 
+
+```java
+    inline explicit operator util::string_view() const 
+```
+- 버퍼 내용을 util::string_view로 봄 
+- Returns > utill::string_view 
+
+```java
+    inline explicit operator util::bytes_view() const
+```
+- 버퍼 내용을 util::bytes_view()로 봄 
+- Returns > util::bytes_view
+
+```java
+    inline const uint8_t *data() const 
+```
+- 버퍼의 데이터에 대한 pointer를 반환 
+- 버퍼는 CPU 버퍼여야 함 <span style="color:#00FFFF">(is cpu()가 true)</span>
+- 그렇지 않으면 assertion이 발생하거나 null pointer가 반환될 수 있음 
+- 장치에 관계없이 버퍼의 데이터 주소를 얻으려면 <span style="color:#00FFFF">address()</span>호출 
+
 ***
 
 ### <span style="color:#00CCCC">References</span>
