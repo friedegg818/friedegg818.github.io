@@ -56,6 +56,8 @@ last_modified_At: 2022-02-10
   + data - [in] 메모리 버퍼 
   + size - [in] 버퍼 크기 
 
+  <br>
+
 ```java
     inline explicit Buffer(util::string_view data) 
 ```
