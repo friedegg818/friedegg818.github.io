@@ -20,7 +20,7 @@ last_modified_At: 2022-02-10
 # Memory Management 
 
 ## Buffers 
-- 다양하고 불명확한 lifetime rule로 raw data pointer를 전달하는 것을 방지하기 위해 Arrow는 <span style="color:	#7B68EE">arrow::Buffer</span>라는 generic abstraction을 제공 
+- 다양하고 불명확한 lifetime rule로 raw data pointer를 전달하는 것을 방지하기 위해 Arrow는 <span style="color:	#00FFFF">arrow::Buffer</span>라는 generic abstraction을 제공 
 
 ### 버퍼는..
 - Pointer와 data size를 캡슐화하고, lifetime을 기본 공급자의 lifetime과 연결          
@@ -38,8 +38,30 @@ last_modified_At: 2022-02-10
 
 ### 관련 API 
 
-#### <span style="color:#DC143C">class arrow::Buffer</span>
+#### <span style="color:#FF1493">class arrow::Buffer</span>
+- 특정 크기의 연속적인 메모리에 대한 pointer를 포함하는 개체 
+- size / capacity 라는 두가지 관련 개념 
+> - size: 유효한 데이터를 가질 수 있는 바이트 수 
+> - capacity: 총 버퍼에 할당된 바이트 수 
+- 버퍼 기본 클래스는 메모리를 소유하지 않지만, 종종 subclass가 소유 
+- Size <= Cpacity는 항상 참 
+- arrow::cuda::CudaBuffer, arrow::MutableBuffer, arrow::py::NumPyBuffer, arrow::py::PyBuffer, arrow::py::PyForeignBuffer 로 서브클래싱 
 
+##### Public functions 
+```java
+    inline Buffer(const uint8_t *data, int64_t size) 
+```
+- 메모리를 복사하지 않고 버퍼 및 크기에서 구성 
+- 매개변수 
+  + data - [in] 메모리 버퍼 
+  + size - [in] 버퍼 크기 
+
+```java
+    inline explicit Buffer(util::string_view data) 
+```
+- 메모리를 복사하지 않고 string_view에서 구성 
+- 매개변수 
+  + data - [in] string_view 객체
 
 ***
 
