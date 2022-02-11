@@ -13,7 +13,7 @@ toc: true
 toc_sticky: true
 
 date: 2022-02-10
-last_modified_At: 2022-02-10
+last_modified_At: 2022-02-11
 
 ---
 
@@ -99,7 +99,8 @@ last_modified_At: 2022-02-10
   <br>
 
 ```java
-    Result<std::shared_ptr<Buffer>> CopySlice(const int64_t start, const int64_t nbytes, MemoryPool *pool = default_memory_pool()) const
+    Result<std::shared_ptr<Buffer>> CopySlice(const int64_t start, const int64_t nbytes, 
+    MemoryPool *pool = default_memory_pool()) const
 ```
 - 버퍼의 section을 새 버퍼에 복사 
 
