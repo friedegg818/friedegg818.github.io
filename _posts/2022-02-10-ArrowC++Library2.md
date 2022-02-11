@@ -1069,7 +1069,7 @@ last_modified_At: 2022-02-11
 ```java
     std::shared_ptr<MemoryManager> arrow::default_cpu_memory_manager()
 ```
-- 기본 CPUU MemoryManager 인스턴스 반환 
+- 기본 CPU MemoryManager 인스턴스 반환 
 - 반환된 싱글톤 인스턴스는 기본 MemoryPool 사용 
 - CPUDevice::Instance() -> default_memory_manager(0)의 축약 (faster spelling)
 
