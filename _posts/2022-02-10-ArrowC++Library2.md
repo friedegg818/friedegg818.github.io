@@ -429,12 +429,10 @@ last_modified_At: 2022-02-11
 ```
 - 이 방법으로 버퍼를 할당하면 **Arrow 메모리 사양에서 권장하는대로 버퍼가 64바이트로 정렬되고 채워짐 
 
-
 >  Arrow 메모리 권장 사항 - Buffer alignment & padding
 - 구현은 정렬된 주소 (8 or 64바이트의 배수)에 메모리를 할당하고 8 or 64바이트의 배수의 길이로 채우는 것이 좋음 
 - 프로세스간 통신을 위해 Arrow 데이터를 직렬화할 때 이러한 정렬 및 패딩 요구사항이 적용됨
 - 가능하면 64바이트 정렬 및 패딩을 사용하는 것이 좋음 
-
 
 ### <span style="color:#A9A9A9">관련 API</span>
 - 특정 메모리 풀에서 버퍼를 할당하는 함수들 
@@ -495,6 +493,363 @@ last_modified_At: 2022-02-11
   <br>
 
 ## 버퍼 생성 
+ - <span style="color:#00FFFF">arrow::BufferBuilder</span> API를 사용하여 점진적으로 버퍼를 할당하고 빌드할 수 있음 
+
+ ```java
+    BufferBuilder builder;
+    builder.Resize(11);     // reserve enough space for 11 bytes 
+    builder.Append("hello ", 6);
+    builder.Append("world", 5);
+
+    auto maybe_buffer = builder.Finish();
+    if (!maybe_buffer.ok()) {
+        // ... handle buffer allocation error
+    }
+    std::shared_ptr<arrow::Buffer> buffer = *maybe_buffer;
+ ```
+- 버퍼가 지정된 고정 너비 유형의 값을 포함하도록 되어 있는 경우 (ex.List 배열의 32-bit offset), <span style="color:#00FFFF">arrow::TypeBufferBuilder</span> API 템플릿을 사용하는 것이 더 편리할 수 있음 
+
+```java
+    TypedBufferBuilder<int32_t> builder;
+    builder.Reserve(2);     // reserve enough space for two int32_t values
+    bulider.Append(0x12345678);
+    builder.Append(-0x765643210);
+
+    auto maybe_buffer = builder.Finish();
+    if (!maybe_buffer.ok()) {
+        // ... handle buffer allocation error
+    }
+    std::shared_ptr<arrow::Buffer> buffer = *maybe_buffer'
+```
+
+### <span style="color:#A9A9A9">관련 API</span>
+
+#### <span style="color:#FF8C00">class arrow::BufferBuilder</span>
+- In-memory 데이터의 연속적인 chunk를 점진적으로 구축하기 위한 클래스 
+
+##### Public Functions 
+
+```java
+    inline explicit 
+    BufferBuilder(std::shared_ptr<ResizableBuffer> buffer, MemoryPool *pool = default_memory_pool())
+```
+- Finish/Rest이 호출될 때까지 제공된 버퍼를 사용하여 시작하는 새로운 builder를 생성 
+- 버퍼의 크기는 조정되지 않음 
+
+<br>
+
+```java
+    inline Status Resize(const int64_t new_capacity, bool shrink_to_fit = true) 
+```
+- 버퍼 크기를 64바이트의 가장 가까운 배수로 조정 
+- 매개변수 
+  + new_capacity - 빌더의 새 용량. 패딩을 위해 64바이트의 배수로 반올림 
+  + shrink_to_fit - 새 용량이 기존 용량보다 작으면 내부 버퍼를 재할당. 빌더를 축소할 때 재할당 하지 않으려면 false로 설정 
+
+  <br>
+
+```java
+    inline Status Reserve(const int64_t additional bytes)
+```
+- 빌더가 할당할 필요 없이 추가 바이트 수를 수용할 수 있는지 확인 
+- 매개변수
+  + additional_bytes - [in] 공간을 만들 추가 바이트 수 
+- Returns > Status 
+
+  <br>
+
+```java
+    inline Status Append(const void *data, const int64_t length)
+```
+- 버퍼에 주어진 데이터를 추가 
+- 필요한 경우 버퍼가 자동으로 확장됨 
+
+  <br>
+
+```java
+    inline Status Append(const int64_t num_copies, uint8_t value)
+```
+- 버퍼의 값에 copy를 추가 
+- 필요한 경우 버퍼가 자동으로 확장됨 
+
+  <br>
+
+```java
+    inline Status Finish(std::shared_ptr<Buffer> *out, bool shrink_to_fit = true)
+```
+- 빌더의 결과를 버퍼의 객체로 반환 
+- 빌더가 재설정되고, 나중에 다시 사용할 수 있음 
+- 매개변수 
+  + out - [out] 최종 버퍼 객체 
+  + shrink_to_fit - 버퍼 크기가 용량보다 작은 경우, 메모리에 좀 더 잘 맞게끔 재할당. 재할당을 방지하려면 false로 설정 (더 많은 메모리 소비)
+- Returns > Status 
+
+  <br>
+
+```java
+    inline Result<std::shared_ptr<Buffer>> 
+    FinishWithLength(int64_t final_length, bool shrink_to_fit = true)
+```
+- Finish와 비슷하지만, 최종 버퍼 크기를 override (재정의)
+- Append method를 호출하지 않고 빌더 메모리에 직접 데이터를 쓴 후에 유용함         
+  (주로 메모리 할당에 Bufferbuilder를 사용할 때)
+
+  <br>
+
+```java
+    inline void Rewind(int64_t position)
+```
+- 빌더 내용을 수정하지 않고 크기를 더 작은 값으로 설정 
+- 재사용 가능한 BufferBuilder 클래스에 사용 
+- 매개변수 
+  + position - [in] 음수가 아니어야하고, 현재 length() 이하여야 함 
+
+  <br>
+
+##### Public Static Functions 
+
+```java
+    static inline int64_t GrowByFactor(int64_t current_capacity, int64_t new_capacity)
+```
+- 원하는 growth factor만큼 확장된 용량을 반환 
+
+  <br>
+
+## Memory pool 
+- Arrow C++ API를 사용하여 버퍼를 할당할 때, 버퍼의 기본 메모리는 <span style="color:#00FFFF">arrow::MemoryPool</span> 인스턴스에 의해 할당됨 
+- 일반적으로 이것은 프로세스 전반의 메모리 풀이지만, 여러가지 Arrow API를 사용하면 내부 할당을 위해 다른 Memory Pool 인스턴스를 전달할 수 있음 
+- 메모리 풀은 array 버퍼와 같은 수명이 긴 대용량 데이터에 사용됨 
+- 작은 C++ 개체 및 임시 작업공간과 같은 기타 데이터는 보통 일반 C++ 할당자를 거침 
+
+### 기본 Memory pool 
+- 기본 메모리 풀은 Arrow C++가 컴파일된 방식에 따라 다름 
+
+> 선택 알고리즘 
+ - if enabled at compile time, a **jemalloc** heap;
+ - otherwise, if enabled at compile time, a **mimalloc** heap;
+ - otherwise, the C library **malloc** heap.
+
+### 기본 Memory pool Overriding 
+- <span style="color:#00FFFF">ARROW_DEFAULT_MEMORY_POOL</span> 환경 변수를 jemalloc, mimalloc, system 중 하나로 선택하여 위의 선택 알고리즘을 재정의할 수 있음 
+- 이 변수는 Arrow C++가 메모리에 로드될 때 한 번 검사됨 (ex.Arrow C++ DLL이 로드될 때)
+
+### <span style="color:#A9A9A9">관련 API</span>
+
+```java
+    MemoryPool *arrow::default_memory_pool()
+```
+- 프로세스 전체의 기본적인 메모리 풀 반환 
+
+<br>
+
+```java
+    Status arrow::jemalloc_memory_pool(MemoryPool **out)
+```
+- jemalloc을 기반으로 하는 프로세스 전체 메모리 풀 반환 
+- jemalloc을 사용할 수 없는 경우 NotImplemented 반환 
+
+<br>
+
+```java
+    Status arrow::mimalloc_memory_pool(MemoryPool **out)
+```
+- mimalloc을 기반으로 하는 프로세스 전체 메모리 풀 반환 
+- mimalloc을 사용할 수 없는 경우 NotImplemented 반환 
+
+<br>
+
+```java
+    MemoryPool *arrow::system_memory_pool()
+```
+- 시스템 할당자를 기반으로 하는 프로세스 전체 메모리 풀 반환 
+
+#### <span style="color:#FF8C00">class arrow::MemoryPool</span>
+- CPU 메모리 할당을 위한 기본 클래스 
+- 할당된 바이트 수를 추적하는 것 외에도, 할당자는 요구되는 64바이트 정렬을 처리해야 함 
+-  <span style="color:#00FFFF"> *arrow::dataset::jni::ReservationListenableMemoryPool, arrow::LoggingMemoryPool, arrow::ProxyMemoryPool, arrow::stl::STLMemoryPool< Allocator >* </span> 에 의해 서브클래싱
+
+##### Public Functions 
+
+```java
+    virtual Status Allocate(int64_t size, uint8_t **out) = 0
+```
+- 최소 크기 바이트의 새로운 메모리 영역 할당
+- 할당된 영역은 64바이트로 정렬됨 
+
+<br>
+
+```java
+    virtual Status Reallocate(int64_t old_size, int64_t new_size, uint8_t **ptr) = 0
+```
+- 이미 할당된 메모리 섹션의 크기 조정 
+- 기본적으로 플랫폼 대부분의 기본 할당자는 정렬된 재할당을 지원하지 않으므로, 이 기능에는 기본 데이터의 복사본이 포함될 수 있음 
+
+<br>
+
+```java
+    virtual void Free(uint8_t *buffer, int64_t size) = 0
+```
+- 할당된 영역을 해제 
+- 매개변수 
+  - buffer - 할당된 메모리 영역의 시작에 대한 Pointer 
+  - size - 버퍼에 있는 할당된 크기. 할당자 구현은 할당된 바이트 양을 추적하고, 백엔드에서 지원하는 경우 더 빠른 할당 해제를 위해 사용할 수 있음 
+
+  <br>
+
+```java
+    inline virtual void ReleaseUnused()
+```
+- 사용하지 않은 메모리를 OS에 반환 
+- 사용하지 않은 메모리를 보유하는 할당자에만 적용 
+
+<br>
+
+```java
+    virtual int64_t bytes_allocated() const = 0
+```
+- 이 할당자를 통해 할당되었지만 아직 해제되지 않은 바이트 수 
+
+<br>
+
+```java
+    virtual int64_t max_memory() const 
+```
+- 이 메모리 풀에서 최대 메모리 할당을 반환 
+- Returns > 할당된 최대 바이트 수. 알 수 없거나 구현되지 않은 경우 -1 반환 
+
+<br>
+
+```java
+    virtual std::string backend_name() const = 0
+```
+- 이 메모리 풀에서 사용되는 백엔드의 이름 
+
+<br>
+
+##### Public Static Functions 
+
+```java
+    static std::unique_ptr<MemoryPool> CreateDefault()
+```
+- 기본 메모리 풀의 새로운 인스턴스를 만듦 
+
+<br>
+
+#### <span style="color:#FF8C00">class arrow::LoggingMemoryPool : public arrow::MemoryPool</span>
+
+##### Public Functions 
+
+```java
+    virtual Status Allocate(int64_t size, uint8_t **out) override 
+```
+- 최소 크기의 바이트의 새로운 메모리 영역을 할당 
+- 할당된 영역은 64 바이트로 정렬됨 
+
+<br>
+
+```java
+    virtual Status Reallocate(int64_t old_size, int64_t new_size, uint8_t **ptr) override 
+```
+- 이미 할당된 메모리 섹션의 크기 조정 
+- 기본적으로 플랫폼 대부분의 기본 할당자는 정렬된 재할당을 지원하지 않으므로, 이 기능에는 기본 데이터의 복사본이 포함될 수 있음 
+
+<br>
+
+```java
+    virtual void Free(uint8_t **buffer, int64_t size) override
+```
+- 할당된 영역을 해제함 
+- 매개변수 
+  + buffer - 할당된 메모리 영역의 시작에 대한 Pointer 
+  + size - 버퍼에 있는 할당된 크기. 할당자 구현은 할당된 바이트의 양을 추적하고, 백엔드에서 지원하는 경우 더 빠른 할당해제를 위해 사용할 수 있음 
+
+  <br>
+
+```java
+    virtual int64_t bytes_allocated() const override 
+```
+- 이 할당자를 통해 할당되었지만 아직 해제되지 않은 바이트 수 
+
+<br>
+
+```java
+   virtual int64_t max_memory() const override 
+```
+- 이 메모리 풀에서 최대 메모리 할당을 반환 
+- Returns > 할당된 최대 바이트. 알 수 없거나 구현되지 않은 경우 -1 반환 
+
+<br>
+
+```java
+    virtual std::string backend_name() const override
+```
+- 이 메모리 풀에서 사용되는 backend의 이름 
+
+<br>
+
+#### <span style="color:#FF8C00">class arrow::ProxyMemoryPool : public arrow::MemoryPool</span>
+- 메모리 할당을 위한 파생 클래스 
+- 직접 호출을 통해 할당된 바이트 수와 최대 메모리를 추적 
+- 실제 할당은 MemoryPool class에 위임됨 
+
+##### Public Functions 
+
+```java
+    virtual Status Allocate(int64_t size, uint8_t **out) override 
+```
+- 최소 크기의 바이트의 새로운 메모리 영역을 할당 
+- 할당된 영역은 64 바이트로 정렬됨 
+
+<br>
+
+```java
+    virtual Status Reallocate(int64_t old_size, int64_t new_size, uint8_t **ptr) override 
+```
+- 이미 할당된 메모리 섹션의 크기 조정 
+- 기본적으로 플랫폼 대부분의 기본 할당자는 정렬된 재할당을 지원하지 않으므로, 이 기능에는 기본 데이터의 복사본이 포함될 수 있음 
+
+<br>
+
+```java
+    virtual void Free(uint8_t **buffer, int64_t size) override
+```
+- 할당된 영역을 해제함 
+- 매개변수 
+  + buffer - 할당된 메모리 영역의 시작에 대한 Pointer 
+  + size - 버퍼에 있는 할당된 크기. 할당자 구현은 할당된 바이트의 양을 추적하고, 백엔드에서 지원하는 경우 더 빠른 할당해제를 위해 사용할 수 있음 
+
+  <br>
+
+```java
+    virtual int64_t bytes_allocated() const override 
+```
+- 이 할당자를 통해 할당되었지만 아직 해제되지 않은 바이트 수 
+
+<br>
+
+```java
+   virtual int64_t max_memory() const override 
+```
+- 이 메모리 풀에서 최대 메모리 할당을 반환 
+- Returns > 할당된 최대 바이트. 알 수 없거나 구현되지 않은 경우 -1 반환 
+
+<br>
+
+```java
+    virtual std::string backend_name() const override
+```
+- 이 메모리 풀에서 사용되는 backend의 이름 
+
+<br>
+
+```java
+    std::vector<std::string> arrow::SupportedMemoryBackendNames()
+```
+- 이 Arrow build에서 지원하는 backend의 이름 반환
+
+<br>
+
+## STL 통합
 
 ***
 
