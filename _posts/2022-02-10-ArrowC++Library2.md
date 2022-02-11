@@ -286,6 +286,7 @@ last_modified_At: 2022-02-11
 - 버퍼를 보거나 복사 
 - 주어진 MemoryManager의 장치에서 버퍼 내용을 보려고 시도하지만, no-copy view가 지원되지 않으면 복사로 대체 
 
+  <br>
 
 #### <span style="color:#FF8C00">class arrow::MutableBuffer : public arrow::Buffer</span>
 - 내용을 변경할 수 있는 버퍼 
@@ -304,7 +305,7 @@ last_modified_At: 2022-02-11
   + length - [in] 배열의 값 수 
 - Returns > 새로운 shared_ptr<Buffer>
 
-<br>
+  <br>
 
 #### <span style="color:#FF8C00">class arrow::ResizableBuffer : public arrow::MutableBuffer</span>
 - 크기를 조정할 수 있는 변경 가능한 버퍼 
@@ -321,7 +322,7 @@ last_modified_At: 2022-02-11
   + new_size - 버퍼의 새로운 크기 
   + Shrink_to_fit - 새로운 크기 < 현재 크기인 경우, 용량 축소 여부 
 
-<br>
+  <br>
 
 ```java
     virtual Status Reserve(const int64_t new_capacity) = 0
@@ -329,7 +330,7 @@ last_modified_At: 2022-02-11
 - 버퍼에 표시된 용량에 맞게 할당된 충분한 메모리가 있는지 확인 (Layout.md의 64바이트 패딩 요구사항을 충족하는지)
 - 버퍼의 reported size를 변경하지 않으면 패딩을 0으로 만들지 않음 
 
-<br>
+  <br>
 
 ### Slicing
 - 기본 데이터의 일부 연속적인 하위 집합을 참조하는 버퍼를 얻기 위해, 버퍼의 zero-copy slice를 만드는 것이 가능함 
