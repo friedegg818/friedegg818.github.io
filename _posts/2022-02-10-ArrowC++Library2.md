@@ -332,7 +332,7 @@ last_modified_At: 2022-02-11
 
   <br>
 
-### Slicing
+## Slicing
 - 기본 데이터의 일부 연속적인 하위 집합을 참조하는 버퍼를 얻기 위해, 버퍼의 zero-copy slice를 만드는 것이 가능함 
 - <span style="color:#00FFFF">arrow::SliceBuffer()</span>, <span style="color:#00FFFF">arrow::SliceMutableBuffer()</span> 함수를 호출하여 수행
 
