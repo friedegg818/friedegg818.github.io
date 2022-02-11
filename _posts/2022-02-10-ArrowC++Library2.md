@@ -64,6 +64,8 @@ last_modified_At: 2022-02-10
 - 메모리를 복사하지 않고 string_view에서 구성 
 - 매개변수 
   + data - [in] string_view 객체
+  
+  <br>
 
 ```java
     inline Buffer(const std::shared_ptr<Buffer> &parent, const int64_t offset, const int64_t size)
@@ -72,31 +74,43 @@ last_modified_At: 2022-02-10
 - 이 방법은 버퍼의 정렬이나 패딩에 대한 assertion을 만들지 않지만 일반적으로 버퍼가 64바이트로 정렬되고 채워질 것으로 예상함 
 - 앞으로 버퍼가 이 규칙을 충족하는지 확인하는데 도움이 되는 유틸리티 메서드를 추가할 수 있음 
 
+  <br>
+
 ```java
     std::string ToHexString() 
 ```
 - 버퍼의 16진수 표현으로 새로운 std::string을 구성 
 - Returns > std::string 
 
+  <br>
+
 ```java
     bool Equals(const Buffer &other, int64_t nbytes) const
 ```
 - 두 버퍼가 동일한 크기이고, 비교된 바이트 수까지 동일한 바이트를 포함하는 경우 true를 반환 
+
+  <br>
 
 ```java
     bool Equals(const Buffer &other) const
 ```
 - 두 버퍼가 같은 크기이고 동일한 바이트를 포함하는 경우 true 반환 
 
+  <br>
+
 ```java
     Result<std::shared_ptr<Buffer>> CopySlice(const int64_t start, const int64_t nbytes, MemoryPool *pool = default_memory_pool()) const
 ```
 - 버퍼의 section을 새 버퍼에 복사 
 
+  <br>
+
 ```java
     inline void ZeroPadding() 
 ```
 - Zero bytes in padding, 즉 size_와 capacity_ 사이의 바이트 
+
+  <br>
 
 ```java
     std::string ToString() const 
@@ -104,17 +118,23 @@ last_modified_At: 2022-02-10
 - 버퍼 내용을 새로운 std::string에 복사 
 - Returs > std::string 
 
+  <br>
+
 ```java
     inline explicit operator util::string_view() const 
 ```
 - 버퍼 내용을 util::string_view로 봄 
 - Returns > utill::string_view 
 
+  <br>
+
 ```java
     inline explicit operator util::bytes_view() const
 ```
 - 버퍼 내용을 util::bytes_view()로 봄 
 - Returns > util::bytes_view
+
+  <br>
 
 ```java
     inline const uint8_t *data() const 
@@ -124,6 +144,8 @@ last_modified_At: 2022-02-10
 - 그렇지 않으면 assertion이 발생하거나 null pointer가 반환될 수 있음 
 - 장치에 관계없이 버퍼의 데이터 주소를 얻으려면 <span style="color:#00FFFF">address()</span>호출 
 
+  <br>
+
 ```java
     inline uint8_t *mutable_data()
 ```
@@ -131,6 +153,8 @@ last_modified_At: 2022-02-10
 - 버퍼는 변경 가능한 CPU 버퍼여야 함 <span style="color:#00FFFF">(is cpu() / is mutable()이 true)</span>
 - 그렇지 않으면 assertion이 발생하거나 null pointer가 반환될 수 있음 
 - 장치에 관계없이 버퍼의 변경 가능한 데이터 주소를 얻으려면 <span style="color:#00FFFF">mutable_address()</span>호출 
+
+  <br>
 
 ***
 
