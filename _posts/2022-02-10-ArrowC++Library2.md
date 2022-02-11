@@ -850,6 +850,229 @@ last_modified_At: 2022-02-11
 <br>
 
 ## STL 통합
+- Arrow memory pool을 사용하여 STL 컨테이너의 데이터를 할당하려면 <span style="color:#00FFFF">arrow::stl::allocator</span> wrapper를 사용하면 됨 
+- 반대로 <span style="color:#00FFFF">arrow::stl::STLMemoryPool</span> 클래스를 사용하면 STL 할당자를 사용하여 Arrow 메모리를 할당할 수 있음 
+- 그러나, STL 할당자는 resizing 작업이 없어 성능이 떨어질 수 있음 
+
+### <span style="color:#A9A9A9">관련 API</span>
+
+#### <span style="color:#FF8C00">template<class T> class arrow::stl::allocator</span>
+- Arrow MemoryPool에 할당을 위임하는 STL 할당자 
+
+##### Public Functions 
+
+```java
+    inline allocator() noexcept
+```
+- 기본 메모리풀에서 할당자를 구성
+
+<br>
+
+```java
+    inline explicit allocator(MemoryPool *pool) noexcept
+```
+- 지정된 메모리풀에서 할당자를 구성 
+
+<br>
+
+#### <span style="color:#FF8C00">template<typename Allocator = std::alocator<uint8_t>> class arrow::stl::STLMemoryPool : public arrow::MemoryPool</span>
+- STL 할당자에게 할당을 위임하는 메모리풀 구현 
+- STL 할당자는 크기 조정 작업을 제공하지 않으므로, 버퍼 크기 조정은 전체 재할당 및 복사를 수행함
+
+##### Public Functions 
+
+```java
+    inline explicit STLMemoryPool (const Allocator &alloc)
+```
+- 지정된 할당자에서 메모리 풀을 구성 
+
+<br>
+
+```java
+    inline virtual Status Allocate(int64_t size, uint8_t **out) override
+```
+- 최소 크기의 바이트의 새 메모리 영역을 할당 
+- 할당된 영역은 64 바이트로 정렬됨 
+
+<br>
+
+```java
+   inline virtual Status Reallocate(int64_t old_size, int64_t new_size, uint8_t *ptr) override 
+```
+- 이미 할당된 메모리의 섹션의 크기 조정 
+- 기본적으로 플랫폼 대부분의 기본 할당자는 정렬된 재할당을 지원하지 않음로, 이 기능에는 기본 데이터의 복사본이 포함될 수 있음 
+
+<br>
+
+```java
+    virtual void Free(uint8_t *buffer, int64_t size) override
+```
+- 할당된 영역을 해제함 
+- 매개변수 
+  + buffer - 할당된 메모리 영역의 시작에 대한 Pointer 
+  + size - 버퍼에 있는 할당된 크기. 할당자 구현은 할당된 바이트의 양을 추적하고 백엔드에서 지원하는 경우, 더 빠른 할당 해제를 위해 사용할 수 있음 
+
+<br>
+
+```java
+    virtual int64_t bytes_allocated() const override
+```
+- 이 할당자를 통해 할당되었지만 아직 해제되지 않은 바이트 수 
+
+<br>
+
+```java
+    virtual int64_t max_memory() const override
+```
+- 이 메모리 풀에서 최대 메모리 할당을 반환 
+- Returns > 할당된 최대 바이트. 알 수 없거나 구현되지 않은 경우 -1 반환 
+
+<br>
+
+```java
+    virtual std::string backend_name() const override
+```
+- 이 메모리 풀에서 사용되는 bacend의 이름 
+
+<br>
+
+## Devices 
+- 많은 Arrow 애플리케이션은 호스트 (CPU) 메모리에만 액세스 
+- 그러나, 어떤 경우에는 호스트 메모리뿐만 아니라 on-device 메모리 (ex.GPU의 on-board 메모리)를 처리하는 것이 바람직 
+- Arrow는 <span style="color:#00FFFF">arrow::Device abstraction</span>을 사용하는 CPU 및 기타 장치를 나타냄 
+- 연관된 클래스인 <span style="color:#00FFFF">arrow::MemoryManager</span>는 지정된 장치에 할당하는 방법을 구체화 함 
+- 각 장치에는 기본 메모리 관리자가 있지만, 추가 인스턴스를 구성할 수 있음 (ex.사용자 지정 arrow::MemoryPool CPU wrapping)
+- 주어진 장치에 메모리를 할당하는 방법을 지정하는 <span style="color:#00FFFF">arrow::MemoryManager</span> 인스턴스 
+
+### Device-Agnostic 프로그래밍 
+- Third-party code에서 버퍼를 수신하는 경우, is_cpu() 메서드를 호출하여 CPU-readable 여부를 쿼리할 수 있음 
+- <span style="color:#00FFFF">arrow::Buffer::View()</span>나 <span style="color:#00FFFF">arrow::Buffer::ViewOrCopy()</span>를 호출하여 일반적인 방식으로 지정된 장치의 버퍼를 볼수 있음 
+- 소스 및 대상 장치가 동일하지 않을 경우에는 작동하지 않음 
+- 그렇지 않으면, 장치 종속 메커니즘이 버퍼 내용에 대한 액세스를 제공하는 대상 장치에 대한 메모리 주소를 구성하려고 시도함 → 버퍼 내용을 읽을 때, 실제 장치 간 전송이 지연될 수 있음 
+- 마찬가지로, CPU가 읽을 수 있는 버퍼를 가정하지 않고 버퍼에서 I/O를 수행하려면 <span style="color:#00FFFF">arrow::Buffer::GetReader()</span> 및 <span style="color:#00FFFF">arrow::Buffer::GetWriter()</span>를 호출할 수 있음 
+- 예를 들어, CPU view 또는 임의의 버퍼의 copy를 얻으려면 다음과 같이 하면 됨 
+
+```java
+    std::shared_ptr<arrow::Buffer> arbitrary_buffer = ...; 
+    std::shared_ptr<arrow::Buffer> cpu_buffer = arrow::Buffer::ViewOrCopy(
+        arbitrary_buffer, arrow::default_cpu_memory_manager()
+    );
+```
+
+<br>
+
+### <span style="color:#A9A9A9">관련 API</span>
+
+#### <span style="color:#FF8C00">class arrow::Device : public astd::enable_shared_from_this<Device>, public arrow::util::EqualityComparable<Device></span>
+- 하드웨어 장치에 대한 추상 인터페이스 
+- 이 개체는 일부 메모리 공간에 액세스할 수 있는 장치를 나타냄 
+- 버퍼 또는 raw memory 주소를 처리할 때, raw memory 주소를 해석해야하는 context를 결정할 수 있음 
+- <span style="color:#00FFFF">*arrow::CPUDevice, arrow::cuda::CudaDevice*</span>로 서브클래싱 
+
+##### Public Functions
+
+```java
+    virtual const char *type_name() const 0
+```
+- 장치 유형의 약어 
+- 반환된 값은 각 장치 클래스에 따라 다르지만, 지정된 클래스의 모든 인스턴스에 대해 동일
+- RTTI의 대체로 사용 가능 
+
+<br>
+
+```java
+    virtual std::string ToString() const = 0
+```
+- 사람이 읽을 수 있는 장치 설명 
+- 반환된 값은 필요한 경우 서로 다른 인스턴스를 구별할 수 있을 만큼 상세해야 함 
+
+<br>
+
+```java
+    virtual bool Equals(const Device&) const = 0
+```
+- 인스턴스가 다른 인스턴스와 동일한 장치를 가리키는지 여부 
+
+<br>
+
+```java
+    inline bool is_cpu() const
+```
+- 장치가 주 CPU 장치인지 여부 
+- 메모리 주소가 CPU에 액세스할 수 있는지 여부를 결정할 때에 매우 유용 
+
+<br>
+
+```java
+    virtual std::shared_ptr<MemoryManager> default_memory_manager() = 0
+```
+- 장치에 연결된 MemoryManager 인스턴스를 반환 
+- 반환된 인스턴스는 이 장치 유형의 MemoryManager 구현에 대한 기본 매개변수를 사용 
+- 일부 장치에서는 기본값이 아닌 매개변수를 사용하여 MemoryManager 인스턴스를 구성할 수도 있음 
+
+<br>
+
+#### <span style="color:#FF8C00">class arrow::CPUDevice : public arrow::Device</span>
+
+##### Public Functions 
+
+```java
+    virtual const char *type_name() const override
+```
+- 장치 유형의 약어 
+- 반환된 값은 각 장치 클래스에 따라 다르지만, 지정된 클래스의 모든 인스턴스에 대해 동일 
+- RTTI의 대체로 사용 가능 
+
+<br>
+
+```java
+    virtual std::string ToString() const override
+```
+- 사람이 읽을 수 있는 장치 설명 
+- 반환된 값은 필요한 경우 서로 다른 인스턴스를 구별할 수 있을만큼 상세해야 함 
+
+<br>
+
+```java
+    virtual bool Equals(const Device&) const override
+```
+- 인스턴스가 다른 인스턴스와 동일한 장치를 가리키는지 여부 
+
+<br>
+
+```java
+    virtual std::shared_ptr<MemoryManager> default_memory_manager() override
+```
+- 장치에 연결된 MemoryManager 인스턴스를 반환 
+- 반환된 인스턴스는 이 장치 유형의 MemoryManager 구현에 대한 기본 매개변수를 사용 
+- 일부 장치에서는 기본값이 아닌 매개변수를 사용하여 MemoryManger 인스턴스를 구성할 수도 있음 
+
+<br>
+
+##### Public Static Function 
+
+```java
+    satic std::shard_ptr<Device> Instance()
+```
+- 전역 CPUDevice 인스턴스 반환 
+
+<br>
+
+```java
+    static std::shared_ptr<MemoryManager> memory_manager(MemoryPool *pool)
+```
+- MemoryManager 생성 
+- 반환된 MemoryManager는 할당을 위해 지정된 MemoryPool 사용 
+
+<br>
+
+```java
+    std::shared_ptr<MemoryManager> arrow::default_cpu_memory_manager()
+```
+- 기본 CPUU MemoryManager 인스턴스 반환 
+- 반환된 싱글톤 인스턴스는 기본 MemoryPool 사용 
+- CPUDevice::Instance() -> default_memory_manager(0)의 축약 (faster spelling)
+
 
 ***
 
