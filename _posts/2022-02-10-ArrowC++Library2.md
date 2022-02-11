@@ -336,7 +336,164 @@ last_modified_At: 2022-02-11
 - 기본 데이터의 일부 연속적인 하위 집합을 참조하는 버퍼를 얻기 위해, 버퍼의 zero-copy slice를 만드는 것이 가능함 
 - <span style="color:#00FFFF">arrow::SliceBuffer()</span>, <span style="color:#00FFFF">arrow::SliceMutableBuffer()</span> 함수를 호출하여 수행
 
+### <span style="color:#A9A9A9">관련 API</span>
 
+```java
+    static inline std::shared_ptr<Buffer>
+    SliceBuffer(const std::shared_ptr<Buffer> &buffer,
+    const int64_t offset, const int64_t length)
+```
+- 주어진 offset과 length로 버퍼에 view를 생성 
+- 이 함수는 실패할 수 없으며 오류를 확인하지 않음 (debug build 제외)
+
+<br>
+
+```java
+    static inline std::shared_ptr<Buffer>
+    SliceBuffer(const std::shared_ptr<Buffer> &buffer, const int64_t offset)
+```
+- 버퍼의 끝까지 주어진 offset에서 버퍼의 view를 생성 
+- 이 함수는 실패할 수 없으며 오류를 확인하지 않음 (debug build 제외)
+
+<br>
+
+```java
+    Result<std::shared_ptr<Buffer>> 
+    SliceBufferSafe(const std::shared_ptr<Buffer> &buffer, int64_t offset)
+```
+- SliceBuffer의 입력 확인 버전 
+- 요청된 슬라이스가 범위를 벗어나면 Invalid Status 반환 
+
+<br>
+
+```java
+    Result<std::shared_ptr<Buffer>>
+    SliceBufferSafe(const std::shared_ptr<Buffer> &buffer, int64_t offset, int64_t length)
+```
+- SliceBuffer의 입력 확인 버전 
+- 요청된 슬라이스가 범위를 벗어나면 Invalid Status 반환 
+- Slice Buffer와 달리 length는 사용 가능한 버퍼 크기로 고정되지 않음 
+
+<br>
+
+```java
+    std::shared_ptr<Buffer> 
+    SliceMutableBuffer(const std::shared_ptr<Buffer> &buffer,
+    const int64_t offset, const int64_t length)
+```
+- SliceBuffer와 비슷하지만, 가변 버퍼 슬라이스를 구성 
+- 상위 버퍼가 변경가능하지 않으면 동작이 정의되지 않음 (debug build에서 중단될 수 있음 )
+
+<br>
+
+```java
+    static inline std::shared_ptr<Buffer> 
+    SliceMutableBuffer(const std::shared_ptr<Buffer> &buffer, const int64_t offset)
+```
+- SliceBuffer와 비슷하지만, 가변 버퍼 슬라이스를 구성 
+- 상위 버퍼가 변경가능하지 않으면 동작이 정의되지 않음 (debug build에서 중단될 수 있음)
+
+<br>
+
+```java
+    Result<std::shared_ptr<Buffer> 
+    SliceMutableBufferSafe(const std::shared_ptr<Buffer> &buffer, int64_t offset)
+```
+- SliceMutableBuffer의 입력 확인 버전 
+- 요청된 슬라이스가 범위를 벗어나면 Invalid Status 반환 
+
+<br>
+
+```java
+    Result<std::shared_ptr<Buffer>>
+    SliceMutableBufferSafe(const std::shared_ptr<Buffer>&buffer, int64_t offset, int64_t length)
+```
+- Slice Mutable Buffer의 입력 확인 버전 
+- 요청된 슬라이스가 범위를 벗어나면 Invalid Status 반환 
+- SliceBuffer와 달리 length는 사용 가능한 버퍼 사이즈로 고정되지 않음 
+
+<br>
+
+## 버퍼 할당 
+-  <span style="color:#00FFFF">arrow::AllocateBuffer()</span>,  <span style="color:#00FFFF">arrow::AllocateResizableBuffer()</span> 오버로드 중 하나를 호출하여 버퍼를 직접 할당할 수 있음 
+
+```java
+    arrow::Result<std::unique_ptr<Buffer>> maybe_buffer = arrow::AllocateBuffer(4096); 
+    if (!maybe_buffer.ok()) {
+        // ... handle allocation error
+    }
+
+    std::shared_ptr<arrow::Buffer> buffer = *std::move(maybe_buffer);
+    unit8_t* buffer_data = buffer->mutable_data();
+    memcpy(buffer_data, "hello world", 11);
+```
+- 이 방법으로 버퍼를 할당하면 **Arrow 메모리 사양에서 권장하는대로 버퍼가 64바이트로 정렬되고 채워짐 
+
+> ```
+> ** Arrow 메모리 권장 사항 - Buffer alignment & padding
+> - 구현은 정렬된 주소 (8 or 64바이트의 배수)에 메모리를 할당하고 8 or 64바이트의 배수의 길이로 채우는 것이 좋음 
+> - 프로세스간 통신을 위해 Arrow 데이터를 직렬화할 때 이러한 정렬 및 패딩 요구사항이 적용됨
+> - 가능하면 64바이트 정렬 및 패딩을 사용하는 것이 좋음 
+
+<span style="color:#A9A9A9">관련 API</span>
+- 특정 메모리 풀에서 버퍼를 할당하는 함수들 
+
+```java
+    Result<std::unique_ptr<Buffer>> 
+    AllocateBuffer(const int64_t size, MemoryPool *pool = NULLPTR)
+```
+- 메모리 풀에서 고정된 크기의 가변 버퍼를 할당하고 패딩을 0으로 만듦 
+- 매개변수 
+  + size - [in] 할당할 버퍼의 크기 
+  + pool - [in] 메모리 풀 
+
+  <br>
+
+```java
+    Result<std::unique_ptr<ResizableBuffer>> 
+    AllocateResizableBuffer(const int64_t size, MemoryPool *pool = NULLPTR)
+```
+- 메모리 풀에서 크기 조정 가능한 버퍼를 할당하고 패딩을 0으로 만듦 
+- 매개변수 
+  + size - [in] 할당할 버퍼의 크기 
+  + pool - [in] 메모리 풀 
+
+  <br>
+
+```java
+    Result<std::shared_ptr<Buffer>> 
+    AllocateBitmap(int64_t length, MemoryPool *pool = NULLPTR)
+```
+- 값이 보장되지 않는 메모리 풀에서 비트맵 버퍼를 할당 
+- 매개변수 
+  + length - [in] 할당할 비트맵의 비트 크기 
+  + pool - [in] 메모리를 할당할 메모리 풀 
+
+  <br>
+
+```java
+    Result<std::shared_ptr<Buffer>> 
+    AllocateEmptyBitmap(int64_t length, MemoryPool *pool = NULLPTR)
+```
+- 메모리 풀에서 0으로 초기화된 비트맵 버퍼를 할당
+- 매개변수 
+  + length - [in] 할당할 비트맵의 비트 크기 
+  + pool - [in] 메모리를 할당할 메모리 풀 
+
+  <br>
+
+```java
+    Result<std::shared_ptr<Buffer>>
+    ConcatenateBuffers(const BufferVector &buffers, MemoryPool *pool = NULLPTR)
+```
+- 여러 버퍼를 단일 버퍼로 연결 
+- 매개변수 
+  + buffers - [in] 연결될 버퍼들 
+  + pool 0 [in] 새로운 버퍼를 할당할 메모리 풀 
+
+  <br>
+
+## 버퍼 생성 
 
 ***
 
