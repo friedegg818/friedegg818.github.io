@@ -36,7 +36,7 @@ last_modified_At: 2022-02-11
 - 버퍼는 size()와 data() 접근자를 사용하여 기본 메모리에 대한 빠른 접근을 제공 
 - 또는 변경 가능한 버퍼에 쓸 수 있는 액세스인 mutuable data() 사용 
 
-### <span style="color:#DCDCDC">관련 API</span> 
+### <span style="color:#A9A9A9">관련 API</span> 
 
 #### <span style="color:#FF8C00">class arrow::Buffer</span>
 - 특정 크기의 연속적인 메모리에 대한 pointer를 포함하는 개체 
