@@ -175,12 +175,13 @@ assert(chunked_array->null_count() == 1);
 - <span style="color:	#00FFFF">arrow::Array::Slice()</span> 및 <span style="color:	#00FFFF">arrow::ChunkedArray::Slice()</span> 메소드를 각각 호출하여 수행 
 
 
+<br>
 
 
 # Data Types 
 - 데이터 유형은 물리적 데이터가 해석되는 방식을 제어함 
 - 데이터 유형의 specification은 다른 프로그래밍 언어 및 런타임을 포함하여, 다른 Arrow 구현 간의 바이너리 상호 운용성을 허용
-- 예를 들어, <span style="color:#FF8C00">pyarow.jvm bridge module</span>을 사용하여 Python과 Java 모두에서 복사 없이 동일한 데이터ㅔ 액세스할 수 있음 
+- 예를 들어, <span style="color:#FF8C00">pyarow.jvm bridge module</span>을 사용하여 Python과 Java 모두에서 복사 없이 동일한 데이터에 액세스할 수 있음 
 
 ## C++의 데이터 유형에 대한 정보를 나타내는 방법 
 1. arrow::DataType 인스턴스 사용 (ex.함수 인수로)
@@ -204,6 +205,44 @@ assert(chunked_array->null_count() == 1);
 	// A list type of single-precision floating-point values
 	type = arrow::list(arrow::float32());
 ```
+
+<br>
+
+# Tabular Data 
+- 배열과 청크 배열은 동종 값의 1차원 시퀀스를 나타내지만, 데이터는 종종 이기종 데이터 (ex.데이터베이스 테이블, CSV파일 등)의 2차원 집합 형ㅌ로 제공됨 
+- Arrow는 이러한 데이터를 편리하고 효율적으로 처리하기 위해 여러 추상화를 제공 
+
+## Fields 
+- 테이블의 특정 열과 <span style="color:	#00FFFF">arrow::StructType</span>과 같은 중첩 데이터 유형의 특정 멤버를 나타내는데 사용됨 
+- 필드, 즉 <span style="color:	#00FFFF">arrow::Field</span>의 인스턴스는 데이터 유형, 필드 이름 및 일부 선택적 메타데이터를 포함함 
+- 필드 생성 권장 방법 → <span style="color:	#00FFFF">arrow::field()</span> 팩토리 함수 호출 
+
+## Schemas 
+- 테이블과 같은 2차원 데이터 세트의 전체 구조를 설명 
+- 필드멸 메타데이터 외에 일부 선택적 스키마 메타데이터와 함께 필드 시퀀스를 보유 
+- 스키마 생성 권장 방법 → <span style="color:	#00FFFF">arrow::schema()</span> 팩토리 함수 오버로드 중 하나를 호출 
+
+```java
+// Create a schema describing datasets with two columns:
+// a int32 column "A" and a utf8-encoded string column "B"
+	std::shared_ptr<arrow::Field> field_a, field_b;
+	std::shared_ptr<arrow::Schema> schema;
+
+	field_a = arrow::field("A", arrow::int32());
+	field_b = arrow::field("B", arrow::utf8());
+	schema = arrow::schema({field_a, field_b});
+```
+
+## Tables 
+- <span style="color:	#00FFFF">arrow::Table</span> → 필드 이름을 제공하는 스키마와 함께 열에 대한 청크 배열에 있는 2차원 데이터 세트 
+- 각 청크된 열은 요소 수에서 동일한 논리적 길이를 가져야 함 
+
+## Record Batches 
+- <span style="color:	#00FFFF">arrow::RecordBatch</span> 각각 길이가 같은 여러 개의 연속 배열로 구성된 2차원 데이터세트 
+- 테이블과 마찬가지로, 레코드 배치에도 배열의 데이터 유형과 일치해야하는 스키마가 있음 
+- 레코드 배치는 다양한 직렬화 및 계산 기능 (가능하면 증분) 을 위한 편리한 작업 단위 
+- <span style="color:	#00FFFF">arrow::TableBatchReader</span>를 사용하여 임의의 수의 레코드 배치로 테이블을 스트리밍할 수 있음 
+- 반대로, <span style="color:	#00FFFF">arrow::Table::FromRecordBatches()</span> 팩토리 함수 오버로드 중 하나를 사용하여 테이블을 형성하기 위해 레코드 배치의 논리적 시퀀스를 조합할 수 있음
 
 
 ***
