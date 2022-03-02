@@ -123,9 +123,9 @@ arrow::Int64Builder builder;
 
 ## 크기 제한 및 권장사항 
 - 일부 배열 유형은 구조적으로 32비트 크기로 제한됨 
-  + - List arrays (최대 2^31개의 요소를 포함할 수 있음)
-  + - String arrays 
-  + - Binary arrays (최대 2GB의 이진 데이터를 포함할 수 있음)
+  +  List arrays (최대 2^31개의 요소를 포함할 수 있음)
+  +  String arrays 
+  +  Binary arrays (최대 2GB의 이진 데이터를 포함할 수 있음)
 - 일부 다른 배열 유형은 C++ 구현에서 최대 2^63개의 요소를 보유할 수 있지만, 다른 Arrow 구현도 해당 배열 유형에 대해 32비트 크기 제한을 가질 수 있음 
 - 이러한 이유로, 대용량 데이터보다는 합리적인 크기의 하위 집합으로 chunk 하는 것이 좋음 
 
