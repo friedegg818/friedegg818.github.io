@@ -21,8 +21,8 @@ last_modified_At: 2022-03-02
 - <span style="color:	#00FFFF">arrow::Array</span> → Arrow의 central type 
 - Array(배열)는 모두 같은 유형을 가진 값의 시퀀스
 - 내부적으로 이러한 값은 배열의 데이터 유형에 따라 수와 의미가 달라지는 하나 이상의 버퍼로 표현됨 (Arrow data layout specification에 명시)
-> - 이러한 버퍼는 값 데이터 자체와, 배열 항목이 null 값임을 나타내는 선택적 비트맵 버퍼로 구성 
-> - 배열에 null 값이 없을 경우 비트맵 버퍼는 완전히 생략 가능 
+  + 이러한 버퍼는 값 데이터 자체와, 배열 항목이 null 값임을 나타내는 선택적 비트맵 버퍼로 구성 
+  + 배열에 null 값이 없을 경우 비트맵 버퍼는 완전히 생략 가능 
 - 배열의 개별 값에 액세스하는데 도움이 되는 각 유형에 대한 <span style="color:	#00FFFF">arrow::Array</span>의 구체적인 하위 클래스 존재 
 
 
@@ -41,46 +41,45 @@ last_modified_At: 2022-03-02
 - 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 
 
 ```java
-    arrow::Int64Builder builder;
-        builder.Append(1);
-        builder.Append(2);
-        builder.Append(3);
-        builder.AppendNull();
-        builder.Append(5);
-        builder.Append(6);
-        builder.Append(7);
-        builder.Append(8);
+ arrow::Int64Builder builder;
+ builder.Append(1);
+ builder.Append(2);
+ builder.Append(3);
+ builder.AppendNull();
+ builder.Append(5);
+ builder.Append(6);
+ builder.Append(7);
+ builder.Append(8);
 
-        auto maybe_array = builder.Finish();
-        if (!maybe_array.ok()) {
-          // ... do something on array building failure
-        }
-        std::shared_ptr<arrow::Array> array = *maybe_array;
+ auto maybe_array = builder.Finish();
+ if (!maybe_array.ok()) {
+    // ... do something on array building failure
+  }
+  std::shared_ptr<arrow::Array> array = *maybe_array;
 ```
 - 해당 값에 액세스하려는 경우, 구체적인 <span style="color:	#00FFFF">arrow::Int64Array</span> 하위 클래스로 캐스팅 할 수 있는 result Array는 두 개의 <span style="color:	#00FFFF">arrow::Buffers</span>로 구성됨 
-> - 첫 번째 버퍼: 1|1|1|1|0|1|1|1 비트가 있는 단일 바이트로 구성된 null bitmap 보유           
->                least-significant bit(LSB) numbering을 사용하므로 배열의 4번째 항목이 null임을 나타냄 
-> - 두 번째 버퍼: 단순하게 위의 모든 값을 포함하는 int64_t 배열         
->                네 번째 항목이 null이므로 버퍼의 해당 위치에 있는 값은 정의되지 않음 
+  + 첫 번째 버퍼: 1|1|1|1|0|1|1|1 비트가 있는 단일 바이트로 구성된 null bitmap 보유           
+                 least-significant bit(LSB) numbering을 사용하므로 배열의 4번째 항목이 null임을 나타냄 
+  + 두 번째 버퍼: 단순하게 위의 모든 값을 포함하는 int64_t 배열         
+                 네 번째 항목이 null이므로 버퍼의 해당 위치에 있는 값은 정의되지 않음 
 
 - 구체적인 배열의 내용에 액세스하는 방법 
 
 ```java
-	// Cast the Array to its actual type to access its data
-		auto int64_array = std::static_pointer_cast<arrow::Int64Array>(array);
+// Cast the Array to its actual type to access its data
+auto int64_array = std::static_pointer_cast<arrow::Int64Array>(array);
 
-		// Get the pointer to the null bitmap
-		const uint8_t* null_bitmap = int64_array->null_bitmap_data();
+// Get the pointer to the null bitmap
+const uint8_t* null_bitmap = int64_array->null_bitmap_data();
 
-		// Get the pointer to the actual data
-		const int64_t* data = int64_array->raw_values();
+// Get the pointer to the actual data
+const int64_t* data = int64_array->raw_values();
 
-		// Alternatively, given an array index, query its null bit and value directly
-		int64_t index = 2;
-		if (!int64_array->IsNull(index)) {
-		   int64_t value = int64_array->Value(index);
-		}
-	
+// Alternatively, given an array index, query its null bit and value directly
+int64_t index = 2;
+if (!int64_array->IsNull(index)) {
+   int64_t value = int64_array->Value(index);
+}	
 ```
 
 ## Performance
@@ -89,42 +88,42 @@ last_modified_At: 2022-03-02
 - 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 (위의 API 활용)
 
 ```java
-    arrow::Int64Builder builder;
-      // Make place for 8 values in total
-      builder.Reserve(8);
-      // Bulk append the given values (with a null in 4th place as indicated by the
-      // validity vector)
-      std::vector<bool> validity = {true, true, true, false, true, true, true, true};
-      std::vector<int64_t> values = {1, 2, 3, 0, 5, 6, 7, 8};
-      builder.AppendValues(values, validity);
+arrow::Int64Builder builder;
+ // Make place for 8 values in total
+ builder.Reserve(8);
+ // Bulk append the given values (with a null in 4th place as indicated by the
+ // validity vector)
+ std::vector<bool> validity = {true, true, true, false, true, true, true, true};
+ std::vector<int64_t> values = {1, 2, 3, 0, 5, 6, 7, 8};
+ builder.AppendValues(values, validity);
 
-      auto maybe_array = builder.Finish();
+ auto maybe_array = builder.Finish();
 ```
 
 - 값을 하나씩 추가해야 하는 경우, 일부 구체적인 빌더 하위 클래스에는 <span style="color:#A9A9A9">"Unsafe"</span>로 표시된 메서드가 존재함
 - 이는 작업 영역의 크기가 올바르게 사전 설정되었다고 가정하는 대신, 더 높은 성능을 제공함 
 
 ```java
-    arrow::Int64Builder builder;
-      // Make place for 8 values in total
-      builder.Reserve(8);
-      builder.UnsafeAppend(1);
-      builder.UnsafeAppend(2);
-      builder.UnsafeAppend(3);
-      builder.UnsafeAppendNull();
-      builder.UnsafeAppend(5);
-      builder.UnsafeAppend(6);
-      builder.UnsafeAppend(7);
-      builder.UnsafeAppend(8);
+arrow::Int64Builder builder;
+ // Make place for 8 values in total
+ builder.Reserve(8);
+ builder.UnsafeAppend(1);
+ builder.UnsafeAppend(2);
+ builder.UnsafeAppend(3);
+ builder.UnsafeAppendNull();
+ builder.UnsafeAppend(5);
+ builder.UnsafeAppend(6);
+ builder.UnsafeAppend(7);
+ builder.UnsafeAppend(8);
 
-      auto maybe_array = builder.Finish();
+ auto maybe_array = builder.Finish();
 ```
 
 ## 크기 제한 및 권장사항 
 - 일부 배열 유형은 구조적으로 32비트 크기로 제한됨 
-> - List arrays (최대 2^31개의 요소를 포함할 수 있음)
-> - String arrays 
-> - Binary arrays (최대 2GB의 이진 데이터를 포함할 수 있음)
+  + - List arrays (최대 2^31개의 요소를 포함할 수 있음)
+  + - String arrays 
+  + - Binary arrays (최대 2GB의 이진 데이터를 포함할 수 있음)
 - 일부 다른 배열 유형은 C++ 구현에서 최대 2^63개의 요소를 보유할 수 있지만, 다른 Arrow 구현도 해당 배열 유형에 대해 32비트 크기 제한을 가질 수 있음 
 - 이러한 이유로, 대용량 데이터보다는 합리적인 크기의 하위 집합으로 chunk 하는 것이 좋음 
 
@@ -136,37 +135,37 @@ last_modified_At: 2022-03-02
 - 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열과 같은 논리 값을 가지는 청크 배열 만들기 / 두 개의 분리된 chunk로 
 
 ```java
-    std::vector<std::shared_ptr<arrow::Array>> chunks;
-    std::shared_ptr<arrow::Array> array;
+std::vector<std::shared_ptr<arrow::Array>> chunks;
+std::shared_ptr<arrow::Array> array;
 
-    // Build first chunk
-    arrow::Int64Builder builder;
-    builder.Append(1);
-    builder.Append(2);
-    builder.Append(3);
-    if (!builder.Finish(&array).ok()) {
-      // ... do something on array building failure
-    }
-    chunks.push_back(std::move(array));
+// Build first chunk
+arrow::Int64Builder builder;
+builder.Append(1);
+builder.Append(2);
+builder.Append(3);
+if (!builder.Finish(&array).ok()) {
+  // ... do something on array building failure
+}
+chunks.push_back(std::move(array));
 
-    // Build second chunk
-    builder.Reset();
-    builder.AppendNull();
-    builder.Append(5);
-    builder.Append(6);
-    builder.Append(7);
-    builder.Append(8);
-    if (!builder.Finish(&array).ok()) {
-      // ... do something on array building failure
-    }
-    chunks.push_back(std::move(array));
+// Build second chunk
+builder.Reset();
+builder.AppendNull();
+builder.Append(5);
+builder.Append(6);
+builder.Append(7);
+builder.Append(8);
+if (!builder.Finish(&array).ok()) {
+  // ... do something on array building failure
+}
+chunks.push_back(std::move(array));
 
-    auto chunked_array = std::make_shared<arrow::ChunkedArray>(std::move(chunks));
+auto chunked_array = std::make_shared<arrow::ChunkedArray>(std::move(chunks));
 
-    assert(chunked_array->num_chunks() == 2);
-    // Logical length in number of values
-    assert(chunked_array->length() == 8);
-    assert(chunked_array->null_count() == 1);
+assert(chunked_array->num_chunks() == 2);
+// Logical length in number of values
+assert(chunked_array->length() == 8);
+assert(chunked_array->null_count() == 1);
 ```
 
 ## Slicing
