@@ -38,7 +38,7 @@ last_modified_At: 2022-03-02
 
 ### ArrayBuilder 및 하위 클래스 사용 
 - Int64 Arrow 배열을 만들기 위해, <span style="color:	#00FFFF">arrow::Int64Builder</span> 클래스 사용 
-- 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 
+- 예시 :: 값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 
 
 ```java
  arrow::Int64Builder builder;
@@ -87,7 +87,7 @@ if (!int64_array->IsNull(index)) {
 ## Performance
 - 최고의 성능을 얻으려면 구체적인 <span style="color:	#00FFFF">arrow::ArrayBuilder</span> 하위 클래스에서 bulk 추가 메서드 (보통 <span style="color:#FF8C00">AppendValues</span>) 를 사용하는 것이 좋음 
 - 요소의 수를 미리 알고 있다면, Resize()나 Reserve() 메소드를 호출하여 작업 영역의 크기를 미리 조정하는 것도 권장
-- 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 (위의 API 활용)
+- 예시 :: 값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 (위의 API 활용)
 
 ```java
 arrow::Int64Builder builder;
@@ -134,7 +134,7 @@ arrow::Int64Builder builder;
 - 그러나 단순한 배열과 달리 chunked array (청크 배열) 는 전체 시퀀스가 메모리에서 물리적으로 연속적일 필요가 없음 
 - 또한 청크 배열의 구성요소는 크기가 같을 필요는 없지만, 모두 같은 데이터 유형을 가져야 함 
 - 청크 배열은 임의의 수의 배열을 집계하여 구성됨 
-- 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열과 같은 논리 값을 가지는 청크 배열 만들기 / 두 개의 분리된 chunk로 
+- 예시 :: 값 4를 보유해야하는 요소가 null인 1~8 사이의 배열과 같은 논리 값을 가지는 청크 배열 만들기 / 두 개의 분리된 chunk로 
 
 ```java
 std::vector<std::shared_ptr<arrow::Array>> chunks;
@@ -174,6 +174,36 @@ assert(chunked_array->null_count() == 1);
 - 물리적 메모리 버퍼와 마찬가지로, 데이터의 일부 논리적 하위 시퀀스를 참조하는 배열 or 청크 배열을 얻기 위해, 배열 및 청크 배열의 zero-copy slices를 만드는 것이 가능 
 - <span style="color:	#00FFFF">arrow::Array::Slice()</span> 및 <span style="color:	#00FFFF">arrow::ChunkedArray::Slice()</span> 메소드를 각각 호출하여 수행 
 
+
+
+
+# Data Types 
+- 데이터 유형은 물리적 데이터가 해석되는 방식을 제어함 
+- 데이터 유형의 specification은 다른 프로그래밍 언어 및 런타임을 포함하여, 다른 Arrow 구현 간의 바이너리 상호 운용성을 허용
+- 예를 들어, <span style="color:#FF8C00">pyarow.jvm bridge module</span>을 사용하여 Python과 Java 모두에서 복사 없이 동일한 데이터ㅔ 액세스할 수 있음 
+
+## C++의 데이터 유형에 대한 정보를 나타내는 방법 
+1. arrow::DataType 인스턴스 사용 (ex.함수 인수로)
+2. arrow::DataType 구체적인 하위 클래스 사용 (ex.템플릿 매개변수로)
+3. arrow::Type::type enum value 사용 (ex.switch 문의 조건으로)
+
+- 1번이 가장 관용적이며 유연함. 런타임 매개변수 유형은 DataType 인스턴스로만 완전히 표현할 수 있음 
+- 성능이 중요한 경우 (동적 타이핑과 다형성을 피하기 위해), 2번과 3번의 형식을 사용할 수 있으나, 매개변수 유형에 대해 어느정도의 런타임 전환이 필요할 수 있음
+- Arrow 데이터 유형은 임의의 중첩을 허용하기 때문에, 컴파일 타임에 가능한 모든 유형을 구체화하는 것은 불가능 
+
+## 데이터 유형 생성 
+- 데이터 유형을 인스턴스화 하려면, 제공된 팩토리 함수를 호출 
+
+```java
+  std::shared_ptr<arrow::DataType> type;
+
+	// A 16-bit integer type
+	type = arrow::int16();
+	// A 64-bit timestamp type (with microsecond granularity)
+	type = arrow::timestamp(arrow::TimeUnit::MICRO);
+	// A list type of single-precision floating-point values
+	type = arrow::list(arrow::float32());
+```
 
 
 ***
