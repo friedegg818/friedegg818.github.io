@@ -31,10 +31,10 @@ last_modified_At: 2022-03-02
 ### Availabe strategies  
 - Arrow 객체는 변경할 수 없기 때문에, <span style="color:	#00FFFF">std::vector</span>처럼 직접 채울 수는 없음 
 - 그 대신, 다음과 같은 방법을 사용 
-> - 데이터가 이미 알맞은 레이아웃으로 메모리에 존재하는 경우          
->   : 해당 메모리를 <span style="color:	#00FFFF">arrow::Buffer</span> 인스턴스 내부에 래핑한 후 배열을 설명하는 <span style="color:	#00FFFF">arrow::ArrowData</span>를 구성 
-> - 그렇지 않으면,          
->   : <span style="color:	#00FFFF">arrow::ArrayBuilder</span> 기본 클래스와 그것의 구체적인 하위 클래스가 배열 데이터를 점진적으로 구축하는데 도움이 됨 (Arrow 형식의 세부사항들을 직접 처리하지 않고도)
+  + 데이터가 이미 알맞은 레이아웃으로 메모리에 존재하는 경우          
+   : 해당 메모리를 <span style="color:	#00FFFF">arrow::Buffer</span> 인스턴스 내부에 래핑한 후 배열을 설명하는 <span style="color:	#00FFFF">arrow::ArrowData</span>를 구성 
+  + 그렇지 않으면,          
+  : <span style="color:	#00FFFF">arrow::ArrayBuilder</span> 기본 클래스와 그것의 구체적인 하위 클래스가 배열 데이터를 점진적으로 구축하는데 도움이 됨 (Arrow 형식의 세부사항들을 직접 처리하지 않고도)
 
 ### ArrayBuilder 및 하위 클래스 사용 
 - Int64 Arrow 배열을 만들기 위해, <span style="color:	#00FFFF">arrow::Int64Builder</span> 클래스 사용 
@@ -58,10 +58,12 @@ last_modified_At: 2022-03-02
   std::shared_ptr<arrow::Array> array = *maybe_array;
 ```
 - 해당 값에 액세스하려는 경우, 구체적인 <span style="color:	#00FFFF">arrow::Int64Array</span> 하위 클래스로 캐스팅 할 수 있는 result Array는 두 개의 <span style="color:	#00FFFF">arrow::Buffers</span>로 구성됨 
-  + 첫 번째 버퍼: 1|1|1|1|0|1|1|1 비트가 있는 단일 바이트로 구성된 null bitmap 보유           
-                 least-significant bit(LSB) numbering을 사용하므로 배열의 4번째 항목이 null임을 나타냄 
-  + 두 번째 버퍼: 단순하게 위의 모든 값을 포함하는 int64_t 배열         
-                 네 번째 항목이 null이므로 버퍼의 해당 위치에 있는 값은 정의되지 않음 
+  + 첫 번째 버퍼               
+   : 1|1|1|1|0|1|1|1 비트가 있는 단일 바이트로 구성된 null bitmap 보유                     
+     least-significant bit(LSB) numbering을 사용하므로 배열의 4번째 항목이 null임을 나타냄 
+  + 두 번째 버퍼         
+  : 단순하게 위의 모든 값을 포함하는 int64_t 배열                      
+    네 번째 항목이 null이므로 버퍼의 해당 위치에 있는 값은 정의되지 않음 
 
 - 구체적인 배열의 내용에 액세스하는 방법 
 
@@ -83,7 +85,7 @@ if (!int64_array->IsNull(index)) {
 ```
 
 ## Performance
-- 최고의 성능을 얻으려면 구체적인 <span style="color:	#00FFFF">arrow::ArrayBuilder</span> 하위 클래스에서 bulk 추가 메서드 (보통 <span style="color:#A9A9A9">AppendValues</span>) 를 사용하는 것이 좋음 
+- 최고의 성능을 얻으려면 구체적인 <span style="color:	#00FFFF">arrow::ArrayBuilder</span> 하위 클래스에서 bulk 추가 메서드 (보통 <span style="color:#FF8C00">AppendValues</span>) 를 사용하는 것이 좋음 
 - 요소의 수를 미리 알고 있다면, Resize()나 Reserve() 메소드를 호출하여 작업 영역의 크기를 미리 조정하는 것도 권장
 - 예시::값 4를 보유해야하는 요소가 null인 1~8 사이의 배열 생성 (위의 API 활용)
 
@@ -100,7 +102,7 @@ arrow::Int64Builder builder;
  auto maybe_array = builder.Finish();
 ```
 
-- 값을 하나씩 추가해야 하는 경우, 일부 구체적인 빌더 하위 클래스에는 <span style="color:#A9A9A9">"Unsafe"</span>로 표시된 메서드가 존재함
+- 값을 하나씩 추가해야 하는 경우, 일부 구체적인 빌더 하위 클래스에는 <span style="color:#FF8C00">"Unsafe"</span>로 표시된 메서드가 존재함
 - 이는 작업 영역의 크기가 올바르게 사전 설정되었다고 가정하는 대신, 더 높은 성능을 제공함 
 
 ```java
