@@ -2,7 +2,7 @@
 
 title: "[Apache Arrow] 09.Arrow C++ Library-4" 
 
-excerpt: Compute Functions
+excerpt: Compute Functions / 학습 중
 
 categories: 
     - Apache Arrow
