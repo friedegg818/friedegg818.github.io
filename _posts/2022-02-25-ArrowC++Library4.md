@@ -39,7 +39,7 @@ std::shared_ptr<arrow::Scalar> increment = ...;
 arrow::Datum incremented_datum;
 
 ARROW_ASSIGN_OR_RAISE(incremented_datum,
-					  arrow::compute::CallFunction("add", {numbers_array, increment}));
+arrow::compute::CallFunction("add", {numbers_array, increment}));
 std::shared_ptr<Array> incremented_array = std::move(incremented_datum).make_array();
 
 // std::shared_ptr<Array>에서 Datum으로의 암시적 변환을 허용 
@@ -92,18 +92,17 @@ max_value = min_max.scalar_as<arrow::StructScalar>().value[1];
 - 그렇지 않으면 공통 숫자 유형은 정수
 - input이 sign 된 경우, 공통 숫자 유형도 signed
 
-#### 예시 
 |Input types|Common numeric type|Notes|
 |:---:|:---:|:---:|
-|int32,int32|int32| |
-|int16,int32|int32|최대 너비 32, LHS->int32로 승격| 
+|int32,int32|int32| - |
+|int16,int32|int32|최대 너비 32, LHS -> int32로 승격| 
 |uint16,int32|int32|input 하나는 signed, unsigned된 것은 재정의|
 |uint32,int32|int64|uint32의 범위를 수용하도록 확장| 
 |uint16,uint32|uint32|모든 input이 unsigned, unsigned 유지|
-|int16,uint32|int64| |
+|int16,uint32|int64| - |
 |uint64,int16|int64|int64는 모든 uint64 값을 수용할 수 없음|
-|float32,int32|float32|RHS->float32로 승격|
-|float32,float64|float64| |
+|float32,int32|float32|RHS -> float32로 승격|
+|float32,float64|float64| - |
 |float32,int64|float32|int64가 더 넓지만, float32로 승격| 
 
 
@@ -141,14 +140,14 @@ max_value = min_max.scalar_as<arrow::StructScalar>().value[1];
 - 모든 element-wise function(요소별 함수)은 배열과 스칼라를 모두 입력으로 받아들임 
 
 > **unary 함수의 의미** 
-> - 스칼라 입력은 스칼라 출력을 생성 
-> - 배열 입력은 배열 출력을 생성 
+- 스칼라 입력은 스칼라 출력을 생성 
+- 배열 입력은 배열 출력을 생성 
 
 > **binary 함수의 의미** 
-> - (scalar, scalar) 입력은 스칼라 출력을 생성 
-> - (array, array) 입력은 배열 출력을 생성 (두 입력의 길이는 동일해야 함)
-> - (scalar, array), (array,scalar)는 배열 출력을 생성        
->    스칼라 입력은 동일한 값이 N번 반복되는 다른 입력과 동일한 길이 N의 배열인 것처럼 처리됨 
+- (scalar, scalar) 입력은 스칼라 출력을 생성 
+- (array, array) 입력은 배열 출력을 생성 (두 입력의 길이는 동일해야 함)
+- (scalar, array), (array,scalar)는 배열 출력을 생성        
+  스칼라 입력은 동일한 값이 N번 반복되는 다른 입력과 동일한 길이 N의 배열인 것처럼 처리됨 
 
 ***
 
