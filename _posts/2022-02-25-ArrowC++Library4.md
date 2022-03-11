@@ -123,11 +123,11 @@ max_value = min_max.scalar_as<arrow::StructScalar>().value[1];
   + Nested        
   : List-likes (FixedSizeList 포함), Struct, Union 및 Map과 같은 관련 유형 
 
-- 함수의 구체적인 input 유형 지원 여부가 확실하지 않을 경우 시도해볼것 
+- 함수의 구체적인 input 유형 지원 여부가 확실하지 않을 경우 시도해볼 것  
 - 지원되지 않는 입력 유형은 <span style="color:#FF8C00">Type Error Status</span>를 반환 
 
 ### Aggregations 
-- 스칼라 집계는 (청크) 배열 또는 스칼라 값에서 작동하고 입력을 단일 출력 값으로 줄임 
+- 스칼라 집계는 (청크) 배열 또는 스칼라 값에서 작동하고 입력을 단일 출력 값으로 줄임
 
 ### Grouped Aggregations ("group by")
 - 그룹화된 집계는 직접 호출할 수 없지만, SQL-style "group by" 작업의 일부로 사용됨 
