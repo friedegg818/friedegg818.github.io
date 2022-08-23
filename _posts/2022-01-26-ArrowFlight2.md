@@ -28,7 +28,7 @@ last_modified_At: 2022-01-27
 <p align="center"><img src="/assets/img/BatchStreams.png"></p>
 
 #### Primary Communication 
-- A Stream of Arrow record batche
+- A Stream of Arrow record batch
 - 효율적인 이동을 목표로 하는 Bulk transfer 
 - 효과적인 Peer to Peer 
 
