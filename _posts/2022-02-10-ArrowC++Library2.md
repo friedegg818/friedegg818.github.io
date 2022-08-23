@@ -44,7 +44,7 @@ last_modified_At: 2022-02-11
 > - size: 유효한 데이터를 가질 수 있는 바이트 수 
 > - capacity: 총 버퍼에 할당된 바이트 수 
 - 버퍼 기본 클래스는 메모리를 소유하지 않지만, 종종 subclass가 소유 
-- Size <= Cpacity는 항상 참 
+- Size <= Capacity는 항상 참 
 - *arrow::cuda::CudaBuffer, arrow::MutableBuffer, arrow::py::NumPyBuffer, arrow::py::PyBuffer, arrow::py::PyForeignBuffer* 에 의해 서브클래싱 
 
 ##### Public functions 
